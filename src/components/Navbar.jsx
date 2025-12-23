@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { useState } from 'react'
+import Logo from './Logo'
 
 const Navbar = () => {
     const { getCartItemsCount, setIsCartOpen } = useCart()
@@ -17,10 +18,8 @@ const Navbar = () => {
             <div className="container-custom">
                 <div className="flex justify-between items-center h-16">
                     {/* Logo */}
-                    <Link to="/" className="flex items-center space-x-2">
-                        <div className="text-2xl font-display font-bold gradient-text">
-                            HandsnFoot
-                        </div>
+                    <Link to="/" className="flex items-center">
+                        <Logo className="h-10 w-auto" variant="full" />
                     </Link>
 
                     {/* Desktop Navigation */}

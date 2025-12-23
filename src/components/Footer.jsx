@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import Logo from './Logo'
 
 const Footer = () => {
     return (
@@ -7,9 +8,7 @@ const Footer = () => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand Section */}
                     <div className="col-span-1 md:col-span-2">
-                        <h3 className="text-2xl font-display font-bold mb-4 gradient-text">
-                            HandsnFoot
-                        </h3>
+                        <Logo className="h-12 w-auto mb-4" variant="full" />
                         <p className="text-gray-400 mb-4">
                             Your premium destination for luxury watches and stylish footwear.
                             We bring you the finest collection of timepieces and shoes that

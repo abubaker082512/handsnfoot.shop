@@ -15,6 +15,9 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Admin from './pages/Admin'
 import LogoPreview from './pages/LogoPreview'
+import PrivacyPolicy from './pages/PrivacyPolicy'
+import Contact from './pages/Contact'
+import RefundPolicy from './pages/RefundPolicy'
 
 function App() {
   return (
@@ -37,6 +40,9 @@ function App() {
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/logo-preview" element={<LogoPreview />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/refund-policy" element={<RefundPolicy />} />
               </Routes>
             </main>
             <Footer />

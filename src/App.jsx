@@ -18,6 +18,7 @@ import LogoPreview from './pages/LogoPreview'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import Contact from './pages/Contact'
 import RefundPolicy from './pages/RefundPolicy'
+import PaymentCallback from './pages/PaymentCallback'
 
 function App() {
   return (
@@ -43,6 +44,7 @@ function App() {
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/refund-policy" element={<RefundPolicy />} />
+                <Route path="/payment/callback" element={<PaymentCallback />} />
               </Routes>
             </main>
             <Footer />

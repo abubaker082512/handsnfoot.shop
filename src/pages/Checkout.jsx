@@ -3,12 +3,15 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../supabase/client'
+import JazzCashPayment from '../components/JazzCashPayment'
 
 const Checkout = () => {
     const navigate = useNavigate()
     const { cart, getCartTotal, clearCart } = useCart()
     const { user } = useAuth()
     const [loading, setLoading] = useState(false)
+    const [step, setStep] = useState('shipping') // 'shipping' or 'payment'
+    const [orderId, setOrderId] = useState(null)
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -18,10 +21,6 @@ const Checkout = () => {
         city: '',
         state: '',
         zipCode: '',
-        cardNumber: '',
-        cardName: '',
-        expiryDate: '',
-        cvv: '',
     })
 
     const handleChange = (e) => {
@@ -42,6 +41,8 @@ const Checkout = () => {
                 order_items: cart,
                 total_price: getCartTotal() * 1.1, // Including tax
                 status: 'pending',
+                payment_status: 'pending',
+                shipping_info: formData,
             }
 
             const { data, error } = await supabase
@@ -51,20 +52,26 @@ const Checkout = () => {
 
             if (error) throw error
 
-            // Mock payment processing (replace with real payment gateway)
-            await new Promise(resolve => setTimeout(resolve, 2000))
-
-            // Clear cart and navigate to success page
-            clearCart()
-            navigate('/order-success', { state: { orderId: data[0]?.id || 'MOCK-' + Date.now() } })
+            // Store order ID and move to payment step
+            setOrderId(data[0]?.id)
+            setStep('payment')
         } catch (error) {
             console.error('Error creating order:', error)
-            // Even if Supabase fails, proceed with mock order
-            clearCart()
-            navigate('/order-success', { state: { orderId: 'MOCK-' + Date.now() } })
+            alert('Failed to create order. Please try again.')
         } finally {
             setLoading(false)
         }
+    }
+
+    const handlePaymentSuccess = (data) => {
+        console.log('Payment successful:', data)
+        clearCart()
+        navigate(`/order-success?orderId=${orderId}&txnRef=${data.txnRefNo}`)
+    }
+
+    const handlePaymentError = (error) => {
+        console.error('Payment error:', error)
+        alert('Payment failed. Please try again.')
     }
 
     if (cart.length === 0) {
@@ -204,73 +211,14 @@ const Checkout = () => {
                             </div>
 
                             {/* Payment Information */}
-                            <div className="bg-white rounded-lg shadow-md p-6">
-                                <h2 className="text-2xl font-display font-bold mb-6">Payment Information</h2>
-                                <div className="mb-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                    <p className="text-sm text-yellow-800">
-                                        <strong>Mock Payment Gateway:</strong> This is a demo. Use any card number (e.g., 4242 4242 4242 4242)
-                                    </p>
-                                </div>
-                                <div className="grid grid-cols-1 gap-4">
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Card Number *
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="cardNumber"
-                                            value={formData.cardNumber}
-                                            onChange={handleChange}
-                                            placeholder="1234 5678 9012 3456"
-                                            required
-                                            className="input"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                                            Cardholder Name *
-                                        </label>
-                                        <input
-                                            type="text"
-                                            name="cardName"
-                                            value={formData.cardName}
-                                            onChange={handleChange}
-                                            required
-                                            className="input"
-                                        />
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                Expiry Date *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="expiryDate"
-                                                value={formData.expiryDate}
-                                                onChange={handleChange}
-                                                placeholder="MM/YY"
-                                                required
-                                                className="input"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                                CVV *
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="cvv"
-                                                value={formData.cvv}
-                                                onChange={handleChange}
-                                                placeholder="123"
-                                                required
-                                                className="input"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            {step === 'payment' && orderId && (
+                                <JazzCashPayment
+                                    orderId={orderId}
+                                    amount={getCartTotal() * 1.1}
+                                    onSuccess={handlePaymentSuccess}
+                                    onError={handlePaymentError}
+                                />
+                            )}
                         </div>
 
                         {/* Order Summary */}
@@ -320,20 +268,31 @@ const Checkout = () => {
                                     </div>
                                 </div>
 
-                                <button
-                                    type="submit"
-                                    disabled={loading}
-                                    className="btn btn-primary w-full"
-                                >
-                                    {loading ? (
-                                        <span className="flex items-center justify-center">
-                                            <div className="spinner mr-2"></div>
-                                            Processing...
-                                        </span>
-                                    ) : (
-                                        'Place Order'
-                                    )}
-                                </button>
+                                {step === 'shipping' && (
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="btn btn-primary w-full"
+                                    >
+                                        {loading ? (
+                                            <span className="flex items-center justify-center">
+                                                <div className="spinner mr-2"></div>
+                                                Creating Order...
+                                            </span>
+                                        ) : (
+                                            'Continue to Payment'
+                                        )}
+                                    </button>
+                                )}
+                                {step === 'payment' && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setStep('shipping')}
+                                        className="btn bg-gray-200 text-gray-700 hover:bg-gray-300 w-full"
+                                    >
+                                        ← Back to Shipping
+                                    </button>
+                                )}
                             </div>
                         </div>
                     </div>

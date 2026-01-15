@@ -15,11 +15,11 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
         setErrors({});
 
         try {
-            const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/jazzcash-card-payment`, {
+            // Use local Vercel API route
+            const response = await fetch('/api/jazzcash-card-payment', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     orderId,

@@ -42,7 +42,7 @@ const Checkout = () => {
                 total_price: getCartTotal() * 1.1, // Including tax
                 status: 'pending',
                 payment_status: 'pending',
-                shipping_info: formData,
+                shipping_address: formData,
             }
 
             const { data, error } = await supabase

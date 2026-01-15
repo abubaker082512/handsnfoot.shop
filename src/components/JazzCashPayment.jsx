@@ -88,8 +88,12 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
 
             const data = await response.json();
 
-            if (!response.ok || !data.success) {
-                throw new Error(data.responseMessage || 'Payment failed');
+            // DEBUG: Alert the response to see what's happening
+            alert(`Payment Response: ${JSON.stringify(data)}`);
+
+            // Check for success or '000' response code (JazzCash success)
+            if (!response.ok || (!data.success && data.pp_ResponseCode !== '000')) {
+                throw new Error(data.responseMessage || data.message || 'Payment failed');
             }
 
             // Payment successful
@@ -97,6 +101,7 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
 
         } catch (error) {
             console.error('MWallet payment error:', error);
+            alert(`Payment Error Log: ${error.message}`);
             setErrors({ general: error.message });
             onError?.(error);
         } finally {
@@ -124,8 +129,8 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
                     type="button"
                     onClick={() => setPaymentMethod('card')}
                     className={`p-4 border-2 rounded-lg transition-all ${paymentMethod === 'card'
-                            ? 'border-primary-600 bg-primary-50'
-                            : 'border-gray-300 hover:border-primary-300'
+                        ? 'border-primary-600 bg-primary-50'
+                        : 'border-gray-300 hover:border-primary-300'
                         }`}
                 >
                     <div className="flex flex-col items-center">
@@ -141,8 +146,8 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
                     type="button"
                     onClick={() => setPaymentMethod('mwallet')}
                     className={`p-4 border-2 rounded-lg transition-all ${paymentMethod === 'mwallet'
-                            ? 'border-primary-600 bg-primary-50'
-                            : 'border-gray-300 hover:border-primary-300'
+                        ? 'border-primary-600 bg-primary-50'
+                        : 'border-gray-300 hover:border-primary-300'
                         }`}
                 >
                     <div className="flex-col items-center">

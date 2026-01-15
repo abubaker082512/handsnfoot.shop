@@ -1,0 +1,236 @@
+import { useState } from 'react';
+import { validateCNIC, validateMobileNumber, formatMobileNumber } from '../utils/jazzcash';
+
+const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
+    const [paymentMethod, setPaymentMethod] = useState('card'); // 'card' or 'mwallet'
+    const [loading, setLoading] = useState(false);
+    const [mwalletData, setMwalletData] = useState({
+        mobileNumber: '',
+        cnic: ''
+    });
+    const [errors, setErrors] = useState({});
+
+    const handleCardPayment = async () => {
+        setLoading(true);
+        setErrors({});
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/jazzcash-card-payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+                },
+                body: JSON.stringify({
+                    orderId,
+                    amount,
+                    description: `HandsnFoot Order ${orderId.substring(0, 8)}`
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to initiate payment');
+            }
+
+            // Get HTML form and open in new window or redirect
+            const htmlForm = await response.text();
+
+            // Create a temporary div to hold the form
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = htmlForm;
+            document.body.appendChild(tempDiv);
+
+            // The form will auto-submit via the script in the HTML
+
+        } catch (error) {
+            console.error('Card payment error:', error);
+            setErrors({ general: error.message });
+            onError?.(error);
+            setLoading(false);
+        }
+    };
+
+    const handleMWalletPayment = async () => {
+        // Validate inputs
+        const newErrors = {};
+
+        if (!validateMobileNumber(mwalletData.mobileNumber)) {
+            newErrors.mobileNumber = 'Please enter a valid Pakistani mobile number (03XXXXXXXXX)';
+        }
+
+        if (!validateCNIC(mwalletData.cnic)) {
+            newErrors.cnic = 'Please enter the last 6 digits of your CNIC';
+        }
+
+        if (Object.keys(newErrors).length > 0) {
+            setErrors(newErrors);
+            return;
+        }
+
+        setLoading(true);
+        setErrors({});
+
+        try {
+            const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/jazzcash-mwallet-payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+                },
+                body: JSON.stringify({
+                    orderId,
+                    amount,
+                    mobileNumber: formatMobileNumber(mwalletData.mobileNumber),
+                    cnic: mwalletData.cnic,
+                    description: `HandsnFoot Order ${orderId.substring(0, 8)}`
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok || !data.success) {
+                throw new Error(data.responseMessage || 'Payment failed');
+            }
+
+            // Payment successful
+            onSuccess?.(data);
+
+        } catch (error) {
+            console.error('MWallet payment error:', error);
+            setErrors({ general: error.message });
+            onError?.(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (paymentMethod === 'card') {
+            handleCardPayment();
+        } else {
+            handleMWalletPayment();
+        }
+    };
+
+    return (
+        <div className="bg-white rounded-lg shadow-md p-6">
+            <h3 className="text-xl font-display font-bold mb-4">Payment Method</h3>
+
+            {/* Payment Method Selector */}
+            <div className="grid grid-cols-2 gap-4 mb-6">
+                <button
+                    type="button"
+                    onClick={() => setPaymentMethod('card')}
+                    className={`p-4 border-2 rounded-lg transition-all ${paymentMethod === 'card'
+                            ? 'border-primary-600 bg-primary-50'
+                            : 'border-gray-300 hover:border-primary-300'
+                        }`}
+                >
+                    <div className="flex flex-col items-center">
+                        <svg className="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                        </svg>
+                        <span className="font-semibold">Credit/Debit Card</span>
+                        <span className="text-sm text-gray-600">Via JazzCash</span>
+                    </div>
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => setPaymentMethod('mwallet')}
+                    className={`p-4 border-2 rounded-lg transition-all ${paymentMethod === 'mwallet'
+                            ? 'border-primary-600 bg-primary-50'
+                            : 'border-gray-300 hover:border-primary-300'
+                        }`}
+                >
+                    <div className="flex-col items-center">
+                        <svg className="w-8 h-8 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                        <span className="font-semibold">Mobile Wallet</span>
+                        <span className="text-sm text-gray-600">JazzCash Account</span>
+                    </div>
+                </button>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+                {/* MWallet Form Fields */}
+                {paymentMethod === 'mwallet' && (
+                    <div className="space-y-4 mb-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Mobile Number
+                            </label>
+                            <input
+                                type="tel"
+                                value={mwalletData.mobileNumber}
+                                onChange={(e) => setMwalletData({ ...mwalletData, mobileNumber: e.target.value })}
+                                placeholder="03XXXXXXXXX"
+                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${errors.mobileNumber ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                disabled={loading}
+                            />
+                            {errors.mobileNumber && (
+                                <p className="text-red-500 text-sm mt-1">{errors.mobileNumber}</p>
+                            )}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                                CNIC (Last 6 Digits)
+                            </label>
+                            <input
+                                type="text"
+                                value={mwalletData.cnic}
+                                onChange={(e) => setMwalletData({ ...mwalletData, cnic: e.target.value.replace(/\D/g, '').slice(0, 6) })}
+                                placeholder="XXXXXX"
+                                maxLength={6}
+                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${errors.cnic ? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                disabled={loading}
+                            />
+                            {errors.cnic && (
+                                <p className="text-red-500 text-sm mt-1">{errors.cnic}</p>
+                            )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Error Message */}
+                {errors.general && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+                        {errors.general}
+                    </div>
+                )}
+
+                {/* Submit Button */}
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-gradient-to-r from-primary-600 to-accent-600 text-white py-3 rounded-lg font-semibold hover:from-primary-700 hover:to-accent-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    {loading ? (
+                        <span className="flex items-center justify-center">
+                            <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Processing...
+                        </span>
+                    ) : (
+                        `Pay PKR ${amount.toFixed(2)}`
+                    )}
+                </button>
+
+                {/* Security Notice */}
+                <p className="text-xs text-gray-500 text-center mt-4">
+                    🔒 Secure payment powered by JazzCash
+                </p>
+            </form>
+        </div>
+    );
+};
+
+export default JazzCashPayment;

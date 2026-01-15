@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const isAdmin = () => {
-        return user?.role === 'admin' || user?.role === 'superadmin' || user?.email === 'handnfoot@gmail.com'
+        return user?.role === 'admin' || user?.role === 'superadmin' || user?.email === 'handsnfoot@gmail.com'
     }
 
     const value = {

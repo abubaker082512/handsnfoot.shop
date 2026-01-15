@@ -48,20 +48,34 @@ export const AuthProvider = ({ children }) => {
 
         // Listen for auth changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-            if (session?.user) {
-                const { data: roleData } = await supabase
-                    .from('dashboard_users')
-                    .select('role')
-                    .eq('id', session.user.id)
-                    .single()
+            try {
+                if (session?.user) {
+                    const { data: roleData, error: roleError } = await supabase
+                        .from('dashboard_users')
+                        .select('role')
+                        .eq('id', session.user.id)
+                        .single()
 
-                const userWithRole = {
-                    ...session.user,
-                    role: roleData?.role || 'user'
+                    if (roleError) {
+                        console.warn('Role fetch error:', roleError)
+                    }
+
+                    const userWithRole = {
+                        ...session.user,
+                        role: roleData?.role || 'user'
+                    }
+                    setUser(userWithRole)
+                } else {
+                    setUser(null)
                 }
-                setUser(userWithRole)
-            } else {
-                setUser(null)
+            } catch (error) {
+                console.error('Auth state change error:', error)
+                // Fallback: set user without role if role fetch crashes completely
+                if (session?.user) {
+                    setUser({ ...session.user, role: 'user' })
+                } else {
+                    setUser(null)
+                }
             }
         })
 

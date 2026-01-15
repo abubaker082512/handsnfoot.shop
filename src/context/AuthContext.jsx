@@ -18,22 +18,31 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         // Check active session
         supabase.auth.getSession().then(async ({ data: { session } }) => {
-            if (session?.user) {
-                // Fetch user role
-                const { data: roleData } = await supabase
-                    .from('dashboard_users')
-                    .select('role')
-                    .eq('id', session.user.id)
-                    .single()
+            try {
+                if (session?.user) {
+                    // Fetch user role
+                    const { data: roleData } = await supabase
+                        .from('dashboard_users')
+                        .select('role')
+                        .eq('id', session.user.id)
+                        .single()
 
-                const userWithRole = {
-                    ...session.user,
-                    role: roleData?.role || 'user'
+                    const userWithRole = {
+                        ...session.user,
+                        role: roleData?.role || 'user'
+                    }
+                    setUser(userWithRole)
+                } else {
+                    setUser(null)
                 }
-                setUser(userWithRole)
-            } else {
+            } catch (error) {
+                console.error('Error fetching session:', error)
                 setUser(null)
+            } finally {
+                setLoading(false)
             }
+        }).catch(err => {
+            console.error('Session error:', err)
             setLoading(false)
         })
 

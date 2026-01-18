@@ -27,6 +27,7 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
                 body: JSON.stringify({
                     orderId,
                     amount,
+                    billReference: orderId, // Pass Order ID as Bill Reference for tracking
                     description: `HandsnFoot Order ${orderId.substring(0, 8)}`
                 })
             });

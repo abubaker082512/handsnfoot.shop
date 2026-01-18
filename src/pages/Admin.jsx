@@ -156,6 +156,19 @@ const Admin = () => {
                     <h1 className="text-4xl font-display font-bold gradient-text">
                         Admin Dashboard
                     </h1>
+                    <button
+                        onClick={() => {
+                            setActiveTab('products')
+                            setShowForm(true)
+                            setEditingProduct(null)
+                        }}
+                        className="btn btn-primary flex items-center gap-2"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                        </svg>
+                        Add New Product
+                    </button>
                 </div>
 
                 {/* Admin Navigation Tabs */}
@@ -163,8 +176,8 @@ const Admin = () => {
                     <button
                         onClick={() => setActiveTab('products')}
                         className={`px-6 py-3 rounded-md font-medium transition-all ${activeTab === 'products'
-                                ? 'bg-primary-600 text-white shadow-md'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                            ? 'bg-primary-600 text-white shadow-md'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                             }`}
                     >
                         Product Management
@@ -172,8 +185,8 @@ const Admin = () => {
                     <button
                         onClick={() => setActiveTab('bulk-upload')}
                         className={`px-6 py-3 rounded-md font-medium transition-all ${activeTab === 'bulk-upload'
-                                ? 'bg-primary-600 text-white shadow-md'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                            ? 'bg-primary-600 text-white shadow-md'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                             }`}
                     >
                         Bulk Upload
@@ -181,8 +194,8 @@ const Admin = () => {
                     <button
                         onClick={() => setActiveTab('cms')}
                         className={`px-6 py-3 rounded-md font-medium transition-all ${activeTab === 'cms'
-                                ? 'bg-primary-600 text-white shadow-md'
-                                : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                            ? 'bg-primary-600 text-white shadow-md'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
                             }`}
                     >
                         Content Management
@@ -193,14 +206,6 @@ const Admin = () => {
                 <div className="animate-fade-in">
                     {activeTab === 'products' && (
                         <>
-                            <div className="flex justify-end mb-6">
-                                <button
-                                    onClick={() => setShowForm(!showForm)}
-                                    className="btn btn-primary"
-                                >
-                                    {showForm ? 'Cancel' : 'Add New Product'}
-                                </button>
-                            </div>
 
                             {/* Product Form */}
                             {showForm && (
@@ -339,11 +344,9 @@ const Admin = () => {
                                             <button type="submit" className="btn btn-primary">
                                                 {editingProduct ? 'Update Product' : 'Add Product'}
                                             </button>
-                                            {editingProduct && (
-                                                <button type="button" onClick={resetForm} className="btn btn-outline">
-                                                    Cancel Edit
-                                                </button>
-                                            )}
+                                            <button type="button" onClick={resetForm} className="btn btn-outline">
+                                                Cancel
+                                            </button>
                                         </div>
                                     </form>
                                 </div>

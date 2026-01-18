@@ -9,97 +9,45 @@ const About = () => {
             <section className="bg-gradient-to-r from-primary-600 to-accent-600 text-white py-20">
                 <div className="container-custom text-center">
                     <h1 className="text-5xl md:text-6xl font-display font-bold mb-6">
-                        About HandsnFoot
+                        About Us
                     </h1>
                     <p className="text-xl max-w-3xl mx-auto">
-                        Your trusted destination for luxury watches and premium footwear since 2020
+                        Welcome to Handsnfoot.shop — your trusted destination for premium hand and foot care products online!
                     </p>
                 </div>
             </section>
 
-            {/* Brand Story */}
+            {/* Brand Story & Mission */}
             <section className="py-16 bg-white">
                 <div className="container-custom">
-                    <div className="max-w-4xl mx-auto">
-                        <h2 className="text-4xl font-display font-bold mb-6 gradient-text text-center">
-                            Our Story
-                        </h2>
-                        <div className="space-y-4 text-gray-700 text-lg leading-relaxed">
-                            <p>
-                                HandsnFoot was born from a passion for timeless elegance and exceptional craftsmanship.
-                                We believe that the accessories you wear—from the watch on your wrist to the shoes on
-                                your feet—tell your unique story.
-                            </p>
-                            <p>
-                                Our journey began with a simple mission: to curate the finest collection of luxury
-                                watches and premium footwear that combine style, quality, and comfort. Every product
-                                in our collection is carefully selected to meet our exacting standards.
-                            </p>
-                            <p>
-                                Today, we're proud to serve thousands of customers worldwide who trust us to deliver
-                                not just products, but experiences that elevate their everyday lives.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Mission Statement */}
-            <section className="py-16 bg-gray-50">
-                <div className="container-custom">
-                    <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-4xl font-display font-bold mb-6 gradient-text">
-                            Our Mission
-                        </h2>
-                        <p className="text-xl text-gray-700 leading-relaxed">
-                            To provide our customers with exceptional products that blend luxury, functionality,
-                            and style. We're committed to offering an unparalleled shopping experience backed by
-                            outstanding customer service and a dedication to quality that never compromises.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            {/* Values */}
-            <section className="py-16 bg-white">
-                <div className="container-custom">
-                    <h2 className="text-4xl font-display font-bold mb-12 gradient-text text-center">
-                        Our Values
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="card p-8 text-center">
-                            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-2xl font-semibold mb-3">Quality First</h3>
-                            <p className="text-gray-600">
-                                We never compromise on quality. Every product meets our rigorous standards.
+                    <div className="max-w-4xl mx-auto space-y-8">
+                        <div>
+                            <h2 className="text-3xl font-display font-bold mb-4 gradient-text">
+                                Who We Are
+                            </h2>
+                            <p className="text-gray-700 text-lg leading-relaxed">
+                                Handsnfoot.shop is proudly a sub-business of Sheikh Abu Baker Group, a sole proprietorship officially registered and committed to bringing quality products to our customers with integrity and care. As part of the Sheikh Abu Baker Group family, we uphold strong values of honesty, reliability, and customer satisfaction in everything we do.
                             </p>
                         </div>
 
-                        <div className="card p-8 text-center">
-                            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-2xl font-semibold mb-3">Customer Focused</h3>
-                            <p className="text-gray-600">
-                                Your satisfaction is our priority. We're here to serve you every step of the way.
+                        <div>
+                            <h2 className="text-3xl font-display font-bold mb-4 gradient-text">
+                                What We Offer
+                            </h2>
+                            <p className="text-gray-700 text-lg leading-relaxed">
+                                At Handsnfoot.shop, we specialize in an extensive range of hand and foot care solutions designed to keep your skin soft, smooth, healthy, and beautiful. Our catalog includes nourishing creams and lotions, brightening and moisturizing treatments, exfoliating scrubs, serums, pedicure tools and kits, and more — all carefully selected to meet your everyday self-care needs.
                             </p>
                         </div>
 
-                        <div className="card p-8 text-center">
-                            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <svg className="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                </svg>
-                            </div>
-                            <h3 className="text-2xl font-semibold mb-3">Innovation</h3>
-                            <p className="text-gray-600">
-                                We constantly evolve to bring you the latest trends and timeless classics.
+                        <div>
+                            <h2 className="text-3xl font-display font-bold mb-4 gradient-text">
+                                Our Promise
+                            </h2>
+                            <p className="text-gray-700 text-lg leading-relaxed">
+                                Whether you’re looking to soothe dry skin, soften rough patches, rejuvenate tired hands and feet, or enhance your overall skin care routine, our products are sourced to deliver effective results for all skin types. We are dedicated to providing high-quality products, reliable delivery, and exceptional customer service that you can always count on.
+                            </p>
+                            <p className="text-gray-700 text-lg leading-relaxed mt-4 font-medium text-center italic">
+                                Thank you for choosing Handsnfoot.shop — where your comfort and confidence come first!
                             </p>
                         </div>
                     </div>

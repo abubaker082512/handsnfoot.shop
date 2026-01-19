@@ -39,10 +39,24 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
             // Get HTML form and inject into page for auto-submission
             const htmlForm = await response.text();
 
-            // Create a temporary div to hold the form
-            const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = htmlForm;
-            document.body.appendChild(tempDiv);
+            console.log('Received HTML form from API');
+
+            // Use DOMParser to properly parse the HTML (ensures scripts execute)
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlForm, 'text/html');
+
+            // Extract and append the body content
+            const bodyContent = doc.body;
+
+            // Clear the current page and replace with payment form
+            document.body.innerHTML = '';
+
+            // Append all elements from the parsed body
+            while (bodyContent.firstChild) {
+                document.body.appendChild(bodyContent.firstChild);
+            }
+
+            console.log('Form injected and scripts should execute');
 
             // The form will auto-submit via the script in the HTML
 

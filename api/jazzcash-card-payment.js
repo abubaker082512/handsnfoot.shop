@@ -156,7 +156,7 @@ export default async function handler(req, res) {
     // --- Parameters Object (EXACTLY matching testing.html form fields) ---
     const params = {
       pp_Version: '1.1',
-      pp_TxnType: '', // Empty like in testing.html (line 108-109)
+      pp_TxnType: 'MPAY', // MPAY for card payments
       pp_Language: 'EN',
       pp_MerchantID: MERCHANT_ID,
       pp_SubMerchantID: '',

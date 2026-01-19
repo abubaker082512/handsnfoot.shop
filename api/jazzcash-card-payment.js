@@ -151,6 +151,14 @@ export default async function handler(req, res) {
       .then(() => console.log('Transaction logged to database'))
       .catch(err => console.error('Database log error:', err));
 
+    // --- DEBUG: Print Payload, Return URL, and Hash ---
+    console.log('\n========== JAZZCASH CARD PAYMENT DEBUG ==========');
+    console.log('Return URL:', RETURN_URL);
+    console.log('\nPayload Parameters:');
+    console.log(JSON.stringify(params, null, 2));
+    console.log('\nSecure Hash:', secureHash);
+    console.log('=================================================\n');
+
     // --- Generate HTML Form for Redirection ---
     const htmlForm = `
 <!DOCTYPE html>

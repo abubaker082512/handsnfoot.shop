@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JazzCash Hash Validation Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #d32f2f;
+        }
+
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-left: 4px solid #d32f2f;
+        }
+
+        .param {
+            font-family: monospace;
+            background: #fff;
+            padding: 5px;
+            margin: 3px 0;
+            border: 1px solid #ddd;
+        }
+
+        button {
+            background: #d32f2f;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #b71c1c;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            font-family: monospace;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .hash-output {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            word-break: break-all;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>JazzCash Hash Validation Test</h1>
+        <p>This page tests if our hash generation matches JazzCash's expected format.</p>
+
+        <div class="section">
+            <h3>Credentials (from .env)</h3>
+            <div class="param">Merchant ID: <strong id="merchantId">MC989920</strong></div>
+            <div class="param">Password: <strong id="password">3r9k9de0b1</strong></div>
+            <div class="param">Integrity Salt: <strong id="integritySalt">z2t4c6q7y2</strong></div>
+        </div>
+
+        <div class="section">
+            <h3>Test Parameters</h3>
+            <button onclick="generateTestData()">Generate Test Data</button>
+            <div id="testParams"></div>
+        </div>
+
+        <div class="section">
+            <h3>Hash String (Before Hashing)</h3>
+            <textarea id="hashString" readonly></textarea>
+        </div>
+
+        <div class="section">
+            <h3>Generated Hash</h3>
+            <div class="hash-output" id="generatedHash">Click "Generate Test Data" to see hash</div>
+        </div>
+
+        <div class="section">
+            <h3>Submit to JazzCash</h3>
+            <form method="post"
+                action="https://onlinepayments.jazzcash.com.pk/payment-orchestrator/CustomerPortal/transactionmanagement/merchantform"
+                id="testForm">
+                <div id="formFields"></div>
+                <button type="submit">Submit to JazzCash</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const MERCHANT_ID = 'MC989920';
+        const PASSWORD = '3r9k9de0b1';
+        const INTEGRITY_SALT = 'z2t4c6q7y2';
+        const RETURN_URL = 'https://onlinepayments.jazzcash.com.pk/payment-orchestrator/payment/api/v1/merchant/callback/simulators/return-url-v2';
+
+        function generateTestData() {
+            // Generate test data (matching testing.html)
+            const amount = 100; // 1 PKR
+            const txnRefNo = 'T' + Math.floor(Math.random() * 1000000000000);
+            const billRef = 'billRef' + Math.floor(Math.random() * 1000);
+            const description = 'Test description of product - ' + Math.floor(Math.random() * 1000);
+
+            const now = moment();
+            const pp_TxnDateTime = now.format('YYYYMMDDHHmmss');
+            const pp_TxnExpiryDateTime = now.add(1, 'days').format('YYYYMMDDHHmmss');
+
+            const params = {
+                pp_Version: '1.1',
+                pp_TxnType: 'MPAY',
+                pp_Language: 'EN',
+                pp_MerchantID: MERCHANT_ID,
+                pp_SubMerchantID: '',
+                pp_Password: PASSWORD,
+                pp_BankID: '',
+                pp_ProductID: '',
+                pp_TxnRefNo: txnRefNo,
+                pp_Amount: String(amount),
+                pp_TxnCurrency: 'PKR',
+                pp_TxnDateTime: pp_TxnDateTime,
+                pp_BillReference: billRef,
+                pp_Description: description,
+                pp_TxnExpiryDateTime: pp_TxnExpiryDateTime,
+                pp_ReturnURL: RETURN_URL,
+                ppmpf_1: '',
+                ppmpf_2: '',
+                ppmpf_3: '',
+                ppmpf_4: '',
+                ppmpf_5: ''
+            };
+
+            // Display parameters
+            let paramsHtml = '';
+            for (const [key, value] of Object.entries(params)) {
+                paramsHtml += `<div class="param">${key}: <strong>${value || '(empty)'}</strong></div>`;
+            }
+            document.getElementById('testParams').innerHTML = paramsHtml;
+
+            // Calculate hash (EXACTLY matching testing.html)
+            let hashString = INTEGRITY_SALT + '&';
+
+            if (params.pp_Amount != '') hashString += params.pp_Amount + '&';
+            if (params.pp_BankID != '') hashString += params.pp_BankID + '&';
+            if (params.pp_BillReference != '') hashString += params.pp_BillReference + '&';
+            if (params.pp_Description != '') hashString += params.pp_Description + '&';
+            if (params.pp_Language != '') hashString += params.pp_Language + '&';
+            if (params.pp_MerchantID != '') hashString += params.pp_MerchantID + '&';
+            if (params.pp_Password != '') hashString += params.pp_Password + '&';
+            if (params.pp_ProductID != '') hashString += params.pp_ProductID + '&';
+            if (params.pp_ReturnURL != '') hashString += params.pp_ReturnURL + '&';
+            if (params.pp_SubMerchantID != '') hashString += params.pp_SubMerchantID + '&';
+            if (params.pp_TxnCurrency != '') hashString += params.pp_TxnCurrency + '&';
+            if (params.pp_TxnDateTime != '') hashString += params.pp_TxnDateTime + '&';
+            if (params.pp_TxnExpiryDateTime != '') hashString += params.pp_TxnExpiryDateTime + '&';
+            if (params.pp_TxnRefNo != '') hashString += params.pp_TxnRefNo + '&';
+            if (params.pp_TxnType != '') hashString += params.pp_TxnType + '&';
+            if (params.pp_Version != '') hashString += params.pp_Version + '&';
+            if (params.ppmpf_1 != '') hashString += params.ppmpf_1 + '&';
+            if (params.ppmpf_2 != '') hashString += params.ppmpf_2 + '&';
+            if (params.ppmpf_3 != '') hashString += params.ppmpf_3 + '&';
+            if (params.ppmpf_4 != '') hashString += params.ppmpf_4 + '&';
+            if (params.ppmpf_5 != '') hashString += params.ppmpf_5 + '&';
+
+            hashString = hashString.slice(0, -1);
+
+            document.getElementById('hashString').value = hashString;
+
+            // Generate hash
+            const hash = CryptoJS.HmacSHA256(hashString, INTEGRITY_SALT);
+            const pp_SecureHash = hash.toString().toUpperCase();
+
+            document.getElementById('generatedHash').textContent = pp_SecureHash;
+
+            // Create form fields
+            let formHtml = '';
+            for (const [key, value] of Object.entries(params)) {
+                formHtml += `<input type="hidden" name="${key}" value="${value}">`;
+            }
+            formHtml += `<input type="hidden" name="pp_SecureHash" value="${pp_SecureHash}">`;
+            document.getElementById('formFields').innerHTML = formHtml;
+
+            console.log('Hash String:', hashString);
+            console.log('Generated Hash:', pp_SecureHash);
+        }
+    </script>
+</body>
+
+</html>

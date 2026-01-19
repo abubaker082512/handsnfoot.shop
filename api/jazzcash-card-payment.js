@@ -1,25 +1,55 @@
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
-// Helper function to generate HMAC-SHA256 hash (matching PHP implementation)
+// Helper function to generate HMAC-SHA256 hash (matching JazzCash reference implementation)
 function generateHash(params, integritySalt) {
-  // Sort parameters alphabetically (A-Z)
-  const sortedKeys = Object.keys(params).sort();
+  // Build hash string in the EXACT order specified by JazzCash (from testing.html)
+  // NOT alphabetically sorted - must follow this specific sequence
+  const orderedKeys = [
+    'pp_Amount',
+    'pp_BankID',
+    'pp_BillReference',
+    'pp_Description',
+    'pp_Language',
+    'pp_MerchantID',
+    'pp_Password',
+    'pp_ProductID',
+    'pp_ReturnURL',
+    'pp_SubMerchantID',
+    'pp_TxnCurrency',
+    'pp_TxnDateTime',
+    'pp_TxnExpiryDateTime',
+    'pp_TxnRefNo',
+    'pp_TxnType',
+    'pp_Version',
+    'ppmpf_1',
+    'ppmpf_2',
+    'ppmpf_3',
+    'ppmpf_4',
+    'ppmpf_5'
+  ];
 
-  // Build sorted string with only non-empty values
-  let sortedString = integritySalt;
+  // Start with integrity salt
+  let hashString = integritySalt + '&';
 
-  for (const key of sortedKeys) {
+  // Append each parameter value in order (only non-empty values)
+  for (const key of orderedKeys) {
     const value = params[key];
-    // Include only non-null, non-empty values (matching PHP: if ($value != null && $value != ""))
+    // Include only non-null, non-empty values
     if (value !== null && value !== undefined && value !== '') {
-      sortedString += '&' + String(value);
+      hashString += String(value) + '&';
     }
   }
 
+  // Remove trailing '&'
+  hashString = hashString.slice(0, -1);
+
+  // Debug: log the hash string (will be visible in server logs)
+  console.log('Hash String (before hashing):', hashString);
+
   // Generate HMAC-SHA256 hash
   const hmac = crypto.createHmac('sha256', integritySalt);
-  hmac.update(sortedString);
+  hmac.update(hashString);
   return hmac.digest('hex').toUpperCase();
 }
 
@@ -128,6 +158,7 @@ export default async function handler(req, res) {
     };
 
     // --- Generate Secure Hash ---
+    // For debugging: we'll capture the hash string in the function
     const secureHash = generateHash(params, INTEGRITY_SALT);
 
     console.log('JazzCash Payment Request:', {
@@ -151,7 +182,7 @@ export default async function handler(req, res) {
       .then(() => console.log('Transaction logged to database'))
       .catch(err => console.error('Database log error:', err));
 
-    // --- DEBUG: Print Payload, Return URL, and Hash ---
+
     console.log('\n========== JAZZCASH CARD PAYMENT DEBUG ==========');
     console.log('Return URL:', RETURN_URL);
     console.log('\nPayload Parameters:');

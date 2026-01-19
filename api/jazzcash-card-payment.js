@@ -132,10 +132,10 @@ export default async function handler(req, res) {
     // Bill Reference: use orderId for tracking
     const pp_BillReference = billReference || orderId;
 
-    // --- Parameters Array (matching PHP implementation) ---
+    // --- Parameters Array (matching testing.html implementation) ---
     const params = {
       pp_Version: '1.1',
-      pp_TxnType: 'MPAY', // MPAY for Card
+      pp_TxnType: '', // Empty string like in testing.html (MPAY is not used in hash)
       pp_Language: 'EN',
       pp_MerchantID: MERCHANT_ID,
       pp_Password: PASSWORD,

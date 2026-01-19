@@ -15,8 +15,6 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
         setErrors({});
 
         try {
-            // DEBUG: Alert before fetching
-            alert('Starting Card Payment...');
 
             // Use local Vercel API route
             const response = await fetch('/api/jazzcash-card-payment', {
@@ -34,16 +32,12 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
 
             if (!response.ok) {
                 const errText = await response.text();
-                // DEBUG: Alert error
-                alert(`API Error: ${response.status} - ${errText}`);
+                console.error('API Error:', response.status, errText);
                 throw new Error('Failed to initiate payment: ' + response.status);
             }
 
-            // Get HTML form and open in new window or redirect
+            // Get HTML form and inject into page for auto-submission
             const htmlForm = await response.text();
-
-            // DEBUG: Alert success
-            alert('Redirecting to JazzCash...');
 
             // Create a temporary div to hold the form
             const tempDiv = document.createElement('div');
@@ -54,7 +48,6 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
 
         } catch (error) {
             console.error('Card payment error:', error);
-            alert(`Card Payment Error: ${error.message}`);
             setErrors({ general: error.message });
             onError?.(error);
             setLoading(false);
@@ -101,8 +94,7 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
 
             const data = await response.json();
 
-            // DEBUG: Alert the response to see what's happening
-            alert(`Payment Response: ${JSON.stringify(data)}`);
+            console.log('MWallet Payment Response:', data);
 
             // Check for success or '000' response code (JazzCash success)
             if (!response.ok || (!data.success && data.pp_ResponseCode !== '000')) {
@@ -114,7 +106,6 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
 
         } catch (error) {
             console.error('MWallet payment error:', error);
-            alert(`Payment Error Log: ${error.message}`);
             setErrors({ general: error.message });
             onError?.(error);
         } finally {

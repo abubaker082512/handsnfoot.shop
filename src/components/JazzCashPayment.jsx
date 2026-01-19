@@ -58,6 +58,20 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
 
             console.log('Form injected and scripts should execute');
 
+            // Manually execute script tags (DOMParser doesn't auto-execute them)
+            const scripts = document.querySelectorAll('script');
+            scripts.forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                }
+                oldScript.parentNode.replaceChild(newScript, oldScript);
+            });
+
+            console.log('Scripts executed');
+
             // The form will auto-submit via the script in the HTML
 
         } catch (error) {

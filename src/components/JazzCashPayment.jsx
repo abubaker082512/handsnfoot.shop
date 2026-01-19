@@ -56,23 +56,21 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
                 document.body.appendChild(bodyContent.firstChild);
             }
 
-            console.log('Form injected and scripts should execute');
+            console.log('Form injected');
 
-            // Manually execute script tags (DOMParser doesn't auto-execute them)
-            const scripts = document.querySelectorAll('script');
-            scripts.forEach(oldScript => {
-                const newScript = document.createElement('script');
-                if (oldScript.src) {
-                    newScript.src = oldScript.src;
+            // Directly submit the form after a short delay (simpler approach)
+            setTimeout(() => {
+                const form = document.getElementById('jazzcashForm');
+                if (form) {
+                    console.log('Submitting form to JazzCash...');
+                    form.submit();
+                    console.log('Form submitted');
                 } else {
-                    newScript.textContent = oldScript.textContent;
+                    console.error('Form not found!');
                 }
-                oldScript.parentNode.replaceChild(newScript, oldScript);
-            });
+            }, 500);
 
-            console.log('Scripts executed');
-
-            // The form will auto-submit via the script in the HTML
+            // The form will auto-submit via setTimeout above
 
         } catch (error) {
             console.error('Card payment error:', error);

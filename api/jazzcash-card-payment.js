@@ -309,9 +309,44 @@ export default async function handler(req, res) {
   </div>
 
   <script>
+    // Debug: Log all form data
+    console.log('=== JAZZCASH FORM DEBUG ===');
+    console.log('Form Action:', '${CARD_PAYMENT_URL}');
+    console.log('Form Method:', 'POST');
+    console.log('\nForm Data:');
+    console.log('pp_Version:', '${params.pp_Version}');
+    console.log('pp_TxnType:', '${params.pp_TxnType}');
+    console.log('pp_Language:', '${params.pp_Language}');
+    console.log('pp_MerchantID:', '${params.pp_MerchantID}');
+    console.log('pp_SubMerchantID:', '${params.pp_SubMerchantID}');
+    console.log('pp_Password:', '${params.pp_Password}');
+    console.log('pp_BankID:', '${params.pp_BankID}');
+    console.log('pp_ProductID:', '${params.pp_ProductID}');
+    console.log('pp_TxnRefNo:', '${params.pp_TxnRefNo}');
+    console.log('pp_Amount:', '${params.pp_Amount}');
+    console.log('pp_TxnCurrency:', '${params.pp_TxnCurrency}');
+    console.log('pp_TxnDateTime:', '${params.pp_TxnDateTime}');
+    console.log('pp_BillReference:', '${params.pp_BillReference}');
+    console.log('pp_Description:', '${params.pp_Description}');
+    console.log('pp_TxnExpiryDateTime:', '${params.pp_TxnExpiryDateTime}');
+    console.log('pp_ReturnURL:', '${params.pp_ReturnURL}');
+    console.log('pp_SecureHash:', '${pp_SecureHash}');
+    console.log('ppmpf_1:', '${params.ppmpf_1}');
+    console.log('ppmpf_2:', '${params.ppmpf_2}');
+    console.log('ppmpf_3:', '${params.ppmpf_3}');
+    console.log('ppmpf_4:', '${params.ppmpf_4}');
+    console.log('ppmpf_5:', '${params.ppmpf_5}');
+    console.log('========================\n');
+
     // Auto-submit form after 2 seconds
     setTimeout(() => {
-      document.getElementById('jazzcashForm').submit();
+      console.log('Submitting form to JazzCash...');
+      try {
+        document.getElementById('jazzcashForm').submit();
+        console.log('Form submitted successfully');
+      } catch (error) {
+        console.error('Form submission error:', error);
+      }
     }, 2000);
   </script>
 </body>

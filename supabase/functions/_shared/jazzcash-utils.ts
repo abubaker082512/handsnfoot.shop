@@ -25,6 +25,8 @@ export async function generateHash(params, integritySalt) {
 
     // Step 3: Join values with '&' and prepend integrity salt
     const message = integritySalt + '&' + values.join('&');
+    console.log('JazzCash Hash String:', message); // Debug log
+
 
     // Step 4: Generate HMAC-SHA256 hash
     const encoder = new TextEncoder();
@@ -148,9 +150,11 @@ export function generateTxnRef() {
  */
 export function formatDateTime(date = new Date()) {
     // Convert to Pakistan Standard Time (UTC+5)
+    // We add 5 hours to the UTC timestamp
     const pktOffset = 5 * 60 * 60 * 1000;
-    const pktDate = new Date(date.getTime() + pktOffset - (date.getTimezoneOffset() * 60 * 1000));
+    const pktDate = new Date(date.getTime() + pktOffset);
 
+    // Use getUTC* methods because we shifted the time by 5 hours relative to UTC
     const year = pktDate.getUTCFullYear();
     const month = String(pktDate.getUTCMonth() + 1).padStart(2, '0');
     const day = String(pktDate.getUTCDate()).padStart(2, '0');

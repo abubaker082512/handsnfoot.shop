@@ -163,32 +163,23 @@
             }
             document.getElementById('testParams').innerHTML = paramsHtml;
 
-            // Calculate hash (EXACTLY matching testing.html)
-            let hashString = INTEGRITY_SALT + '&';
+            // Calculate hash (matching official JazzCash 2026 documentation)
+            // 1. Sort by parameter NAMES (keys) alphabetically
+            // 2. Concatenate VALUES only with & separator
+            // 3. Prepend integrity salt
+            // 4. Hash with HMAC-SHA256
 
-            if (params.pp_Amount != '') hashString += params.pp_Amount + '&';
-            if (params.pp_BankID != '') hashString += params.pp_BankID + '&';
-            if (params.pp_BillReference != '') hashString += params.pp_BillReference + '&';
-            if (params.pp_Description != '') hashString += params.pp_Description + '&';
-            if (params.pp_Language != '') hashString += params.pp_Language + '&';
-            if (params.pp_MerchantID != '') hashString += params.pp_MerchantID + '&';
-            if (params.pp_Password != '') hashString += params.pp_Password + '&';
-            if (params.pp_ProductID != '') hashString += params.pp_ProductID + '&';
-            if (params.pp_ReturnURL != '') hashString += params.pp_ReturnURL + '&';
-            if (params.pp_SubMerchantID != '') hashString += params.pp_SubMerchantID + '&';
-            if (params.pp_TxnCurrency != '') hashString += params.pp_TxnCurrency + '&';
-            if (params.pp_TxnDateTime != '') hashString += params.pp_TxnDateTime + '&';
-            if (params.pp_TxnExpiryDateTime != '') hashString += params.pp_TxnExpiryDateTime + '&';
-            if (params.pp_TxnRefNo != '') hashString += params.pp_TxnRefNo + '&';
-            if (params.pp_TxnType != '') hashString += params.pp_TxnType + '&';
-            if (params.pp_Version != '') hashString += params.pp_Version + '&';
-            if (params.ppmpf_1 != '') hashString += params.ppmpf_1 + '&';
-            if (params.ppmpf_2 != '') hashString += params.ppmpf_2 + '&';
-            if (params.ppmpf_3 != '') hashString += params.ppmpf_3 + '&';
-            if (params.ppmpf_4 != '') hashString += params.ppmpf_4 + '&';
-            if (params.ppmpf_5 != '') hashString += params.ppmpf_5 + '&';
+            // Get all non-empty keys and sort alphabetically
+            const sortedKeys = Object.keys(params)
+                .filter(key => params[key] !== null && params[key] !== undefined && params[key] !== '')
+                .sort();
 
-            hashString = hashString.slice(0, -1);
+            // Concatenate values only
+            const values = sortedKeys.map(key => String(params[key]));
+            const concatenatedValues = values.join('&');
+
+            // Prepend integrity salt
+            const hashString = INTEGRITY_SALT + '&' + concatenatedValues;
 
             document.getElementById('hashString').value = hashString;
 

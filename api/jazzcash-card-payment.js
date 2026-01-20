@@ -1,83 +1,32 @@
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
-// Helper function to generate HMAC-SHA256 hash (EXACTLY matching testing.html)
+// Helper function to generate HMAC-SHA256 hash (matching JazzCash official documentation 2026)
 function generateHash(params, integritySalt) {
-  // Build hash string in the EXACT order from testing.html CalculateHash() function
-  let hashString = integritySalt + '&';
+  // Per official docs:
+  // 1. Sort by parameter NAMES (keys) in alphabetical order
+  // 2. Concatenate VALUES only with & separator
+  // 3. Prepend integrity salt
+  // 4. Hash with HMAC-SHA256 using integrity salt as secret key
 
-  // Add parameters in the exact order from testing.html (lines 455-517)
-  if (params.pp_Amount != '') {
-    hashString += params.pp_Amount + '&';
-  }
-  if (params.pp_BankID != '') {
-    hashString += params.pp_BankID + '&';
-  }
-  if (params.pp_BillReference != '') {
-    hashString += params.pp_BillReference + '&';
-  }
-  if (params.pp_Description != '') {
-    hashString += params.pp_Description + '&';
-  }
-  if (params.pp_Language != '') {
-    hashString += params.pp_Language + '&';
-  }
-  if (params.pp_MerchantID != '') {
-    hashString += params.pp_MerchantID + '&';
-  }
-  if (params.pp_Password != '') {
-    hashString += params.pp_Password + '&';
-  }
-  if (params.pp_ProductID != '') {
-    hashString += params.pp_ProductID + '&';
-  }
-  if (params.pp_ReturnURL != '') {
-    hashString += params.pp_ReturnURL + '&';
-  }
-  if (params.pp_SubMerchantID != '') {
-    hashString += params.pp_SubMerchantID + '&';
-  }
-  if (params.pp_TxnCurrency != '') {
-    hashString += params.pp_TxnCurrency + '&';
-  }
-  if (params.pp_TxnDateTime != '') {
-    hashString += params.pp_TxnDateTime + '&';
-  }
-  if (params.pp_TxnExpiryDateTime != '') {
-    hashString += params.pp_TxnExpiryDateTime + '&';
-  }
-  if (params.pp_TxnRefNo != '') {
-    hashString += params.pp_TxnRefNo + '&';
-  }
-  if (params.pp_TxnType != '') {
-    hashString += params.pp_TxnType + '&';
-  }
-  if (params.pp_Version != '') {
-    hashString += params.pp_Version + '&';
-  }
-  if (params.ppmpf_1 != '') {
-    hashString += params.ppmpf_1 + '&';
-  }
-  if (params.ppmpf_2 != '') {
-    hashString += params.ppmpf_2 + '&';
-  }
-  if (params.ppmpf_3 != '') {
-    hashString += params.ppmpf_3 + '&';
-  }
-  if (params.ppmpf_4 != '') {
-    hashString += params.ppmpf_4 + '&';
-  }
-  if (params.ppmpf_5 != '') {
-    hashString += params.ppmpf_5 + '&';
-  }
+  // Get all non-empty parameter keys and sort alphabetically
+  const sortedKeys = Object.keys(params)
+    .filter(key => params[key] !== null && params[key] !== undefined && params[key] !== '')
+    .sort(); // Alphabetical sort (ASCII order)
 
-  // Remove trailing '&' (line 519 in testing.html)
-  hashString = hashString.slice(0, -1);
+  // Concatenate values only
+  const values = sortedKeys.map(key => String(params[key]));
+  const concatenatedValues = values.join('&');
+
+  // Prepend integrity salt
+  const hashString = integritySalt + '&' + concatenatedValues;
 
   // Debug: log the hash string
   console.log('Hash String (before hashing):', hashString);
+  console.log('Sorted keys:', sortedKeys);
+  console.log('Values:', values);
 
-  // Generate HMAC-SHA256 hash (lines 533-536 in testing.html)
+  // Generate HMAC-SHA256 hash using integrity salt as secret key
   const hash = crypto.createHmac('sha256', integritySalt)
     .update(hashString)
     .digest('hex');

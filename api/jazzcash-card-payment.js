@@ -31,7 +31,8 @@ function generateHash(params, integritySalt) {
     .update(hashString)
     .digest('hex');
 
-  return hash.toUpperCase();
+  // Return lowercase hash (matching PHP implementation - line 144 in docs)
+  return hash;
 }
 
 export default async function handler(req, res) {

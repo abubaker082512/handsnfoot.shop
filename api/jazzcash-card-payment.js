@@ -57,12 +57,12 @@ export default async function handler(req, res) {
   try {
     const { orderId, amount, description, billReference } = req.body;
 
-    // JazzCash Credentials
-    const MERCHANT_ID = process.env.JAZZCASH_MERCHANT_ID;
-    const PASSWORD = process.env.JAZZCASH_PASSWORD;
-    const INTEGRITY_SALT = process.env.JAZZCASH_INTEGRITY_SALT;
-    const RETURN_URL = process.env.JAZZCASH_RETURN_URL;
-    const CARD_PAYMENT_URL = process.env.JAZZCASH_CARD_PAYMENT_URL ||
+    // JazzCash Credentials (trim to remove any trailing whitespace/newlines)
+    const MERCHANT_ID = process.env.JAZZCASH_MERCHANT_ID?.trim();
+    const PASSWORD = process.env.JAZZCASH_PASSWORD?.trim();
+    const INTEGRITY_SALT = process.env.JAZZCASH_INTEGRITY_SALT?.trim();
+    const RETURN_URL = process.env.JAZZCASH_RETURN_URL?.trim();
+    const CARD_PAYMENT_URL = (process.env.JAZZCASH_CARD_PAYMENT_URL?.trim()) ||
       'https://onlinepayments.jazzcash.com.pk/payment-orchestrator/CustomerPortal/transactionmanagement/merchantform';
 
     if (!MERCHANT_ID || !PASSWORD || !INTEGRITY_SALT || !RETURN_URL) {

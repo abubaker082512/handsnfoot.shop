@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 const PaymentCallback = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
+    const { clearCart } = useCart();
     const [status, setStatus] = useState('processing'); // processing, success, failed
     const [message, setMessage] = useState('');
 
@@ -18,6 +20,8 @@ const PaymentCallback = () => {
             setMessage(decodeURIComponent(error));
         } else if (orderId && txnRef) {
             setStatus('success');
+            // Clear cart on successful payment
+            clearCart();
             // Redirect to order success page after 2 seconds
             setTimeout(() => {
                 navigate(`/order-success?orderId=${orderId}&txnRef=${txnRef}`);
@@ -26,7 +30,7 @@ const PaymentCallback = () => {
             setStatus('processing');
             setMessage('Processing your payment...');
         }
-    }, [searchParams, navigate]);
+    }, [searchParams, navigate, clearCart]);
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4">

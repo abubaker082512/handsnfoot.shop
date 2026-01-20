@@ -1,8 +1,9 @@
-import { useLocation, Link } from 'react-router-dom'
+import { useSearchParams, Link } from 'react-router-dom'
 
 const OrderSuccess = () => {
-    const location = useLocation()
-    const orderId = location.state?.orderId || 'N/A'
+    const [searchParams] = useSearchParams()
+    const orderId = searchParams.get('orderId') || 'N/A'
+    const txnRef = searchParams.get('txnRef') || 'N/A'
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12">
@@ -28,9 +29,13 @@ const OrderSuccess = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
                             <div>
                                 <p className="text-sm text-gray-500 mb-1">Order Number</p>
-                                <p className="font-semibold text-lg">{orderId}</p>
+                                <p className="font-semibold text-lg break-all">{orderId}</p>
                             </div>
                             <div>
+                                <p className="text-sm text-gray-500 mb-1">Transaction Reference</p>
+                                <p className="font-semibold text-lg break-all">{txnRef}</p>
+                            </div>
+                            <div className="md:col-span-2">
                                 <p className="text-sm text-gray-500 mb-1">Order Date</p>
                                 <p className="font-semibold text-lg">
                                     {new Date().toLocaleDateString('en-US', {

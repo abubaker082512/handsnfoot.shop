@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 
@@ -8,8 +8,12 @@ const PaymentCallback = () => {
     const { clearCart } = useCart();
     const [status, setStatus] = useState('processing'); // processing, success, failed
     const [message, setMessage] = useState('');
+    const hasRedirected = useRef(false);
 
     useEffect(() => {
+        // Prevent multiple redirects
+        if (hasRedirected.current) return;
+
         // Check if we have success parameters
         const orderId = searchParams.get('orderId');
         const txnRef = searchParams.get('txnRef');
@@ -22,10 +26,17 @@ const PaymentCallback = () => {
             setStatus('success');
             // Clear cart on successful payment
             clearCart();
+
+            // Mark that we're redirecting
+            hasRedirected.current = true;
+
             // Redirect to order success page after 2 seconds
-            setTimeout(() => {
-                navigate(`/order-success?orderId=${orderId}&txnRef=${txnRef}`);
+            const timer = setTimeout(() => {
+                navigate(`/order-success?orderId=${orderId}&txnRef=${txnRef}`, { replace: true });
             }, 2000);
+
+            // Cleanup function
+            return () => clearTimeout(timer);
         } else {
             setStatus('processing');
             setMessage('Processing your payment...');

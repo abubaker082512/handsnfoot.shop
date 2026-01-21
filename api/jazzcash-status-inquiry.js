@@ -96,7 +96,10 @@ export default async function handler(req, res) {
         console.log('Full Response:', JSON.stringify(data, null, 2));
 
         // UPDATE DATABASE IF PAYMENT SUCCESSFUL
-        if (data.pp_ResponseCode === '000' || data.pp_PaymentResponseCode === '121') {
+        // Per Docs: pp_ResponseCode '000' means API call success.
+        // pp_PaymentResponseCode '121' means Transaction Completed.
+        // We strictly check for '121' to confirm payment.
+        if (data.pp_PaymentResponseCode === '121') {
             try {
                 // Try to get Supabase credentials
                 const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
@@ -160,7 +163,7 @@ export default async function handler(req, res) {
 
         // Return standardized response
         return res.status(200).json({
-            success: data.pp_ResponseCode === '000' || data.pp_PaymentResponseCode === '121',
+            success: data.pp_PaymentResponseCode === '121',
             txnRefNo: data.pp_TxnRefNo,
             responseCode: data.pp_ResponseCode,
             responseMessage: data.pp_ResponseMessage,

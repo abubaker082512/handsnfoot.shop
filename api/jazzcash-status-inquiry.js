@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
 
 // Helper function to generate HMAC-SHA256 hash for status inquiry
 function generateStatusInquiryHash(params, integritySalt) {
@@ -15,7 +16,6 @@ function generateStatusInquiryHash(params, integritySalt) {
     const hashString = integritySalt + '&' + concatenatedValues;
 
     console.log('Status Inquiry Hash String:', hashString);
-    console.log('Sorted keys:', sortedKeys);
 
     // Generate HMAC-SHA256 hash
     const hash = crypto.createHmac('sha256', integritySalt)
@@ -78,8 +78,6 @@ export default async function handler(req, res) {
 
         console.log('\n========== JAZZCASH STATUS INQUIRY ==========');
         console.log('Transaction Ref:', txnRefNo);
-        console.log('Request Body:', JSON.stringify(requestBody, null, 2));
-        console.log('==============================================\n');
 
         // Make request to JazzCash
         const response = await fetch(STATUS_INQUIRY_URL, {
@@ -94,47 +92,83 @@ export default async function handler(req, res) {
 
         console.log('\n========== JAZZCASH RESPONSE ==========');
         console.log('Response Code:', data.pp_ResponseCode);
-        console.log('Response Message:', data.pp_ResponseMessage);
-        console.log('Payment Response Code:', data.pp_PaymentResponseCode);
-        console.log('Status:', data.pp_Status);
+        console.log('Message:', data.pp_ResponseMessage);
         console.log('Full Response:', JSON.stringify(data, null, 2));
-        console.log('========================================\n');
 
-        // Verify response hash (optional but recommended)
-        if (data.pp_SecureHash) {
-            const responseParams = { ...data };
-            delete responseParams.pp_SecureHash;
+        // UPDATE DATABASE IF PAYMENT SUCCESSFUL
+        if (data.pp_ResponseCode === '000' || data.pp_PaymentResponseCode === '121') {
+            try {
+                // Try to get Supabase credentials
+                const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+                // Use Service Role Key for backend updates if available, otherwise Anon Key (might fail RLS)
+                const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
 
-            const expectedHash = generateStatusInquiryHash(responseParams, INTEGRITY_SALT);
+                if (supabaseUrl && supabaseKey) {
+                    const supabase = createClient(supabaseUrl, supabaseKey);
 
-            if (expectedHash !== data.pp_SecureHash.toLowerCase()) {
-                console.warn('Response hash verification failed!');
-                console.warn('Expected:', expectedHash);
-                console.warn('Received:', data.pp_SecureHash.toLowerCase());
-            } else {
-                console.log('Response hash verified successfully ✓');
+                    // 1. Update Transaction
+                    // First we need to find the transaction by ref no
+                    // Note: RLS might block SELECT if using Anon key, but Service Role Key bypasses RLS
+                    const { data: transaction } = await supabase
+                        .from('payment_transactions')
+                        .select('*')
+                        .eq('txn_ref_no', txnRefNo)
+                        .single();
+
+                    if (transaction) {
+                        // Update Transaction Status
+                        await supabase
+                            .from('payment_transactions')
+                            .update({
+                                status: 'completed',
+                                response_code: data.pp_PaymentResponseCode,
+                                response_message: data.pp_PaymentResponseMessage,
+                                retrieval_ref_no: data.pp_RetrievalReferenceNo,
+                                auth_code: data.pp_AuthCode,
+                                response_timestamp: new Date().toISOString()
+                            })
+                            .eq('txn_ref_no', txnRefNo);
+
+                        // 2. Update Order Status
+                        if (transaction.order_id) {
+                            await supabase
+                                .from('orders')
+                                .update({
+                                    payment_status: 'completed', // Mark as paid
+                                    jazzcash_txn_ref_no: txnRefNo,
+                                    jazzcash_retrieval_ref_no: data.pp_RetrievalReferenceNo || '',
+                                    jazzcash_auth_code: data.pp_AuthCode || '',
+                                    jazzcash_response_code: data.pp_PaymentResponseCode || '',
+                                    payment_completed_at: new Date().toISOString(),
+                                    amount_paid: transaction.amount
+                                })
+                                .eq('id', transaction.order_id);
+
+                            console.log('Database updated: Transaction and Order marked as completed');
+                        }
+                    } else {
+                        console.warn('Transaction not found in DB for Ref:', txnRefNo);
+                    }
+                } else {
+                    console.warn('Supabase credentials not found. Database not updated.');
+                }
+            } catch (dbError) {
+                console.error('Database Update Failed:', dbError);
+                // We proceed to return the response to the frontend
             }
         }
 
-        // Return response
+        // Return standardized response
         return res.status(200).json({
-            success: data.pp_ResponseCode === '000',
+            success: data.pp_ResponseCode === '000' || data.pp_PaymentResponseCode === '121',
+            txnRefNo: data.pp_TxnRefNo,
             responseCode: data.pp_ResponseCode,
             responseMessage: data.pp_ResponseMessage,
             paymentResponseCode: data.pp_PaymentResponseCode,
             paymentResponseMessage: data.pp_PaymentResponseMessage,
             status: data.pp_Status,
-            transactionDetails: {
-                merchantId: data.pp_MerchantID,
-                txnRefNo: data.pp_TxnRefNo,
-                txnType: data.pp_TxnType,
-                amount: data.pp_Amount,
-                txnDateTime: data.pp_TxnDateTime,
-                billReference: data.pp_BillReference,
-                retrievalReferenceNo: data.pp_RetrievalReferenceNo,
-                authCode: data.pp_AuthCode,
-                settlementDate: data.pp_SettlementDate
-            }
+            amount: data.pp_Amount,
+            raw: data
         });
 
     } catch (error) {

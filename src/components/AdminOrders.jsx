@@ -36,12 +36,18 @@ const AdminOrders = () => {
         setStatusLoading(prev => ({ ...prev, [orderId]: true }))
 
         try {
-            // Call Supabase Edge Function
-            const { data, error } = await supabase.functions.invoke('jazzcash-status-inquiry', {
-                body: { txnRefNo }
+            // Call Vercel Serverless Function (instead of Edge Function)
+            const response = await fetch('/api/jazzcash-status-inquiry', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ txnRefNo })
             })
 
-            if (error) throw error
+            const data = await response.json()
+
+            if (!response.ok) throw new Error(data.message || 'API call failed')
 
             console.log('Status Inquiry Result:', data)
 

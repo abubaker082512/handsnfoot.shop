@@ -91,7 +91,8 @@ const AdminOrders = () => {
         if (!address) return 'N/A'
         // If address is JSON object
         if (typeof address === 'object') {
-            return `${address.address}, ${address.city}, ${address.country}`
+            const country = address.country || 'Pakistan'
+            return `${address.address}, ${address.city}, ${country}`
         }
         // If string (legacy)
         return address
@@ -154,7 +155,7 @@ const AdminOrders = () => {
                                         </div>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">
-                                        Rs {order.total_amount?.toLocaleString()}
+                                        Rs {order.total_price?.toLocaleString()}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         <div className="flex flex-col">

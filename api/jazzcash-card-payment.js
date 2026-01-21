@@ -71,10 +71,11 @@ export default async function handler(req, res) {
     }
 
     // Supabase Client
-    const supabase = createClient(
-      process.env.VITE_SUPABASE_URL,
-      process.env.VITE_SUPABASE_ANON_KEY
-    );
+    // Use Service Role Key if available for reliable DB updates, otherwise fallback to Anon Key
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     // Generate transaction reference (matching testing.html line 62)
     const txnRefNo = 'T' + Math.floor(Math.random() * 1000000000000);
@@ -140,7 +141,7 @@ export default async function handler(req, res) {
     console.log('Hash Type:', typeof pp_SecureHash);
     console.log('=================================================\n');
 
-    // Log transaction to database
+    // 1. Log transaction to database
     await supabase
       .from('payment_transactions')
       .insert({
@@ -153,6 +154,20 @@ export default async function handler(req, res) {
       })
       .then(() => console.log('Transaction logged to database'))
       .catch(err => console.error('Database log error:', err));
+
+    // 2. Link Transaction to Order immediately
+    // This ensures Admin Dashboard can track status even if callback fails
+    await supabase
+      .from('orders')
+      .update({
+        payment_method: 'jazzcash', // Explicitly set method
+        jazzcash_txn_ref_no: txnRefNo, // Link ref no
+        payment_status: 'initiated', // Set status to initiated
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', orderId)
+      .then(() => console.log('Order updated with transaction ref'))
+      .catch(err => console.error('Order update error:', err));
 
     // --- Generate HTML Form for Redirection (matching testing.html form structure) ---
     const htmlForm = `

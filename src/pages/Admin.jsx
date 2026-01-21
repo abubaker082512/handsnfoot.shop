@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../supabase/client'
+import AdminOrders from '../components/AdminOrders'
 import ImageUpload from '../components/ImageUpload'
 import BulkProductUpload from '../components/BulkProductUpload'
 import CMSEditor from '../components/CMSEditor'
@@ -9,7 +10,7 @@ import CMSEditor from '../components/CMSEditor'
 const Admin = () => {
     const navigate = useNavigate()
     const { user, isAdmin } = useAuth()
-    const [activeTab, setActiveTab] = useState('products')
+    const [activeTab, setActiveTab] = useState('orders')
 
     // Product Management State
     const [products, setProducts] = useState([])
@@ -174,6 +175,15 @@ const Admin = () => {
                 {/* Admin Navigation Tabs */}
                 <div className="bg-white rounded-lg shadow-sm p-1 mb-8 inline-flex">
                     <button
+                        onClick={() => setActiveTab('orders')}
+                        className={`px-6 py-3 rounded-md font-medium transition-all ${activeTab === 'orders'
+                            ? 'bg-primary-600 text-white shadow-md'
+                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                            }`}
+                    >
+                        Orders
+                    </button>
+                    <button
                         onClick={() => setActiveTab('products')}
                         className={`px-6 py-3 rounded-md font-medium transition-all ${activeTab === 'products'
                             ? 'bg-primary-600 text-white shadow-md'
@@ -204,6 +214,8 @@ const Admin = () => {
 
                 {/* Content Area */}
                 <div className="animate-fade-in">
+                    {activeTab === 'orders' && <AdminOrders />}
+
                     {activeTab === 'products' && (
                         <>
 

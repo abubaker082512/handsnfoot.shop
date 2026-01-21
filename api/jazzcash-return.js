@@ -42,10 +42,11 @@ export default async function handler(req, res) {
         }
 
         // Supabase Client
-        const supabase = createClient(
-            process.env.VITE_SUPABASE_URL,
-            process.env.VITE_SUPABASE_ANON_KEY
-        );
+        // Use Service Role Key if available for reliable DB updates, otherwise fallback to Anon Key
+        const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+        const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+
+        const supabase = createClient(supabaseUrl, supabaseKey);
 
         // 1. Verify Secure Hash
         const receivedHash = params.pp_SecureHash;

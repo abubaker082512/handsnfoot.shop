@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../supabase/client'
 import JazzCashPayment from '../components/JazzCashPayment'
+import EasypaisaPayment from '../components/EasypaisaPayment'
 
 const Checkout = () => {
     const navigate = useNavigate()
@@ -12,6 +13,7 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false)
     const [step, setStep] = useState('shipping') // 'shipping' or 'payment'
     const [orderId, setOrderId] = useState(null)
+    const [paymentGateway, setPaymentGateway] = useState('jazzcash') // 'jazzcash' or 'easypaisa'
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -66,7 +68,10 @@ const Checkout = () => {
     const handlePaymentSuccess = (data) => {
         console.log('Payment successful:', data)
         clearCart()
-        navigate(`/order-success?orderId=${orderId}&txnRef=${data.txnRefNo}`)
+
+        // Handle different payment gateways
+        const txnRef = data.txnRefNo || data.data?.paymentToken || 'N/A'
+        navigate(`/order-success?orderId=${orderId}&txnRef=${txnRef}`)
     }
 
     const handlePaymentError = (error) => {
@@ -234,12 +239,60 @@ const Checkout = () => {
 
                         {/* Payment Information */}
                         {step === 'payment' && orderId && (
-                            <JazzCashPayment
-                                orderId={orderId}
-                                amount={getCartTotal() * 1.1}
-                                onSuccess={handlePaymentSuccess}
-                                onError={handlePaymentError}
-                            />
+                            <>
+                                {/* Payment Gateway Selector */}
+                                <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+                                    <h3 className="text-xl font-display font-bold mb-4">Select Payment Gateway</h3>
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <button
+                                            type="button"
+                                            onClick={() => setPaymentGateway('jazzcash')}
+                                            className={`p-4 border-2 rounded-lg transition-all ${paymentGateway === 'jazzcash'
+                                                    ? 'border-primary-600 bg-primary-50'
+                                                    : 'border-gray-300 hover:border-primary-300'
+                                                }`}
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="text-2xl mb-2">💳</div>
+                                                <span className="font-semibold">JazzCash</span>
+                                                <span className="text-sm text-gray-600">Card & Mobile Wallet</span>
+                                            </div>
+                                        </button>
+
+                                        <button
+                                            type="button"
+                                            onClick={() => setPaymentGateway('easypaisa')}
+                                            className={`p-4 border-2 rounded-lg transition-all ${paymentGateway === 'easypaisa'
+                                                    ? 'border-primary-600 bg-primary-50'
+                                                    : 'border-gray-300 hover:border-primary-300'
+                                                }`}
+                                        >
+                                            <div className="flex flex-col items-center">
+                                                <div className="text-2xl mb-2">📱</div>
+                                                <span className="font-semibold">Easypaisa</span>
+                                                <span className="text-sm text-gray-600">Mobile Account & OTC</span>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Render selected payment gateway */}
+                                {paymentGateway === 'jazzcash' ? (
+                                    <JazzCashPayment
+                                        orderId={orderId}
+                                        amount={getCartTotal() * 1.1}
+                                        onSuccess={handlePaymentSuccess}
+                                        onError={handlePaymentError}
+                                    />
+                                ) : (
+                                    <EasypaisaPayment
+                                        orderId={orderId}
+                                        amount={getCartTotal() * 1.1}
+                                        onSuccess={handlePaymentSuccess}
+                                        onError={handlePaymentError}
+                                    />
+                                )}
+                            </>
                         )}
                     </div>
 

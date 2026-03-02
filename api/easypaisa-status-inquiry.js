@@ -50,7 +50,7 @@ export default async function handler(req, res) {
         const PASSWORD = process.env.EASYPAISA_PASSWORD || 'b0c0c9e7dea2c69232cb608230ba24f6';
         const HASH_KEY = process.env.EASYPAISA_HASH_KEY || 'PBYUY9IX5TZ840KB';
         const INQUIRY_API_URL = process.env.EASYPAISA_INQUIRY_API_URL ||
-            'https://easypaisa.com.pk/easypay/transaction-inquiry';
+            'https://easypaystg.easypaisa.com.pk/easypay-service/rest/v4/inquire-transaction';
 
         if (!STORE_ID) {
             console.error('Missing EASYPAISA_STORE_ID environment variable');

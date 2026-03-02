@@ -64,12 +64,13 @@ export default async function handler(req, res) {
         const USERNAME = process.env.EASYPAISA_USERNAME || 'HandsnFoot';
         const PASSWORD = process.env.EASYPAISA_PASSWORD || 'b0c0c9e7dea2c69232cb608230ba24f6';
         const HASH_KEY = process.env.EASYPAISA_HASH_KEY || 'PBYUY9IX5TZ840KB';
+        // Correct sandbox URL: easypaystg | Production: easypay
         const OTC_API_URL = process.env.EASYPAISA_OTC_API_URL ||
-            'https://easypaisa.com.pk/easypay/otc-transaction';
+            'https://easypaystg.easypaisa.com.pk/easypay-service/rest/v4/initiate-otc-transaction';
 
         if (!STORE_ID) {
             console.error('Missing EASYPAISA_STORE_ID environment variable');
-            return res.status(500).json({ error: 'Server configuration error' });
+            return res.status(500).json({ error: 'Server configuration error', details: 'EASYPAISA_STORE_ID is not set' });
         }
 
         // Supabase Client

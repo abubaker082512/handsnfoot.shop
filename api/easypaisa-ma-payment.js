@@ -12,14 +12,14 @@ function generateSignature(data, hashKey) {
 function formatEasypaisaDateTime(date) {
     // Convert to PKT (UTC+5)
     const pktDate = new Date(date.getTime() + (5 * 60 * 60 * 1000));
-    
+
     const year = pktDate.getUTCFullYear();
     const month = String(pktDate.getUTCMonth() + 1).padStart(2, '0');
     const day = String(pktDate.getUTCDate()).padStart(2, '0');
     const hours = String(pktDate.getUTCHours()).padStart(2, '0');
     const minutes = String(pktDate.getUTCMinutes()).padStart(2, '0');
     const seconds = String(pktDate.getUTCSeconds()).padStart(2, '0');
-    
+
     return `${year}${month}${day}${hours}${minutes}${seconds}`;
 }
 
@@ -53,7 +53,7 @@ export default async function handler(req, res) {
 
         // Validate inputs
         if (!orderId || !amount || !mobileAccountNo) {
-            return res.status(400).json({ 
+            return res.status(400).json({
                 error: 'Missing required fields',
                 details: 'orderId, amount, and mobileAccountNo are required'
             });
@@ -64,12 +64,13 @@ export default async function handler(req, res) {
         const USERNAME = process.env.EASYPAISA_USERNAME || 'HandsnFoot';
         const PASSWORD = process.env.EASYPAISA_PASSWORD || 'b0c0c9e7dea2c69232cb608230ba24f6';
         const HASH_KEY = process.env.EASYPAISA_HASH_KEY || 'PBYUY9IX5TZ840KB';
-        const MA_API_URL = process.env.EASYPAISA_MA_API_URL || 
-            'https://easypaisa.com.pk/easypay/ma-transaction';
+        // Correct sandbox URL: easypaystg | Production: easypay
+        const MA_API_URL = process.env.EASYPAISA_MA_API_URL ||
+            'https://easypaystg.easypaisa.com.pk/easypay-service/rest/v4/initiate-ma-transaction';
 
         if (!STORE_ID) {
             console.error('Missing EASYPAISA_STORE_ID environment variable');
-            return res.status(500).json({ error: 'Server configuration error' });
+            return res.status(500).json({ error: 'Server configuration error', details: 'EASYPAISA_STORE_ID is not set' });
         }
 
         // Supabase Client
@@ -81,7 +82,7 @@ export default async function handler(req, res) {
         // Generate transaction datetime
         const now = new Date();
         const transactionDateTime = formatEasypaisaDateTime(now);
-        
+
         // Calculate token expiry (24 hours from now)
         const expiryHours = parseInt(process.env.EASYPAISA_TOKEN_EXPIRY_HOURS || '24');
         const expiryDate = new Date(now.getTime() + (expiryHours * 60 * 60 * 1000));
@@ -90,13 +91,14 @@ export default async function handler(req, res) {
         // Format amount (convert to paisa - multiply by 100)
         const transactionAmount = String(Math.round(amount * 100));
 
-        // Prepare request payload
+        // Prepare request payload (v4 API fields)
         const payload = {
             orderId: orderId,
             storeId: STORE_ID,
             transactionAmount: transactionAmount,
             transactionType: 'MA',
             mobileAccountNo: mobileAccountNo,
+            msisdn: mobileAccountNo,          // v4 API also uses msisdn
             emailAddress: emailAddress || '',
             tokenExpiry: tokenExpiry
         };
@@ -196,7 +198,8 @@ export default async function handler(req, res) {
         console.error('Easypaisa MA Payment Error:', error);
         return res.status(500).json({
             error: 'Internal Server Error',
-            details: error.message
+            details: error.message,
+            cause: error.cause?.message || null
         });
     }
 }

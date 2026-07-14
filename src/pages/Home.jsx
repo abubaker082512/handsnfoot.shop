@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { supabase } from '../supabase/client'
+import { mockProducts } from '../utils/mockProducts'
 
 const Home = () => {
     const [featuredProducts, setFeaturedProducts] = useState([])
@@ -52,6 +53,9 @@ const Home = () => {
             setFeaturedProducts(data || [])
         } catch (error) {
             console.error('Error fetching products:', error)
+            // Use mock data as fallback
+            const featuredMock = mockProducts.filter(p => p.featured).slice(0, 8)
+            setFeaturedProducts(featuredMock)
         } finally {
             setLoading(false)
         }

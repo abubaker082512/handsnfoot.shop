@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom'
 import { supabase } from '../supabase/client'
 import { useCart } from '../context/CartContext'
 import ProductCard from '../components/ProductCard'
+import { getMockProduct, getMockRelatedProducts } from '../utils/mockProducts'
 
 const ProductDetails = () => {
     const { id } = useParams()
@@ -57,66 +58,8 @@ const ProductDetails = () => {
         }
     }
 
-    const getMockProduct = (productId) => {
-        const allProducts = [
-            {
-                id: '1',
-                name: 'Luxury Chronograph Watch',
-                description: 'Premium Swiss-made automatic watch with sapphire crystal. Features include chronograph function, date display, and water resistance up to 100m. The stainless steel case and leather strap combine durability with elegance.',
-                price: 1299.99,
-                category: 'Watches',
-                rating: 4.8,
-                stock: 15,
-                featured: true,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&q=80',
-            },
-            {
-                id: '2',
-                name: 'Designer Leather Sneakers',
-                description: 'Handcrafted Italian leather sneakers with premium comfort. Made from full-grain leather with a cushioned insole and rubber outsole for superior grip. Perfect for both casual and semi-formal occasions.',
-                price: 349.99,
-                category: 'Footwear',
-                rating: 4.6,
-                stock: 25,
-                featured: true,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=800&q=80',
-            },
-            // Add more products as needed
-        ]
-        return allProducts.find(p => p.id === productId) || allProducts[0]
-    }
-
-    const getMockRelatedProducts = (category, excludeId) => {
-        const allProducts = [
-            {
-                id: '3',
-                name: 'Classic Dress Watch',
-                description: 'Elegant minimalist watch perfect for formal occasions',
-                price: 899.99,
-                category: 'Watches',
-                rating: 4.9,
-                stock: 10,
-                featured: true,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&q=80',
-            },
-            {
-                id: '4',
-                name: 'Premium Running Shoes',
-                description: 'High-performance running shoes with advanced cushioning',
-                price: 199.99,
-                category: 'Footwear',
-                rating: 4.7,
-                stock: 30,
-                featured: true,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80',
-            },
-        ]
-        return allProducts.filter(p => p.category === category && p.id !== excludeId).slice(0, 4)
-    }
+    // Centralized mock data mapping
+    // Handled by imports above
 
     const handleAddToCart = () => {
         addToCart(product, quantity)

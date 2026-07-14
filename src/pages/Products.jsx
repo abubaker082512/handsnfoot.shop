@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { supabase } from '../supabase/client'
 import ProductCard from '../components/ProductCard'
+import { mockProducts } from '../utils/mockProducts'
 
 const Products = () => {
     const [searchParams, setSearchParams] = useSearchParams()
@@ -34,152 +35,7 @@ const Products = () => {
     }
 
     const getAllMockProducts = () => {
-        return [
-            {
-                id: '1',
-                name: 'Luxury Chronograph Watch',
-                description: 'Premium Swiss-made automatic watch with sapphire crystal',
-                price: 1299.99,
-                category: 'Watches',
-                rating: 4.8,
-                stock: 15,
-                featured: true,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80',
-            },
-            {
-                id: '2',
-                name: 'Designer Leather Sneakers',
-                description: 'Handcrafted Italian leather sneakers with premium comfort',
-                price: 349.99,
-                category: 'Footwear',
-                rating: 4.6,
-                stock: 25,
-                featured: true,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&q=80',
-            },
-            {
-                id: '3',
-                name: 'Classic Dress Watch',
-                description: 'Elegant minimalist watch perfect for formal occasions',
-                price: 899.99,
-                category: 'Watches',
-                rating: 4.9,
-                stock: 10,
-                featured: true,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?w=500&q=80',
-            },
-            {
-                id: '4',
-                name: 'Premium Running Shoes',
-                description: 'High-performance running shoes with advanced cushioning',
-                price: 199.99,
-                category: 'Footwear',
-                rating: 4.7,
-                stock: 30,
-                featured: true,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80',
-            },
-            {
-                id: '5',
-                name: 'Smart Watch Pro',
-                description: 'Advanced smartwatch with health tracking and GPS',
-                price: 599.99,
-                category: 'Watches',
-                rating: 4.9,
-                stock: 20,
-                featured: false,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=500&q=80',
-            },
-            {
-                id: '6',
-                name: 'Oxford Dress Shoes',
-                description: 'Classic leather Oxford shoes for the modern gentleman',
-                price: 279.99,
-                category: 'Footwear',
-                rating: 4.8,
-                stock: 18,
-                featured: false,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1614252369475-531eba835eb1?w=500&q=80',
-            },
-            {
-                id: '7',
-                name: 'Diver Watch',
-                description: 'Professional diving watch with 300m water resistance',
-                price: 1599.99,
-                category: 'Watches',
-                rating: 4.9,
-                stock: 8,
-                featured: false,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1606390104762-8e0f36f2c0e4?w=500&q=80',
-            },
-            {
-                id: '8',
-                name: 'Casual Canvas Sneakers',
-                description: 'Comfortable everyday sneakers with timeless style',
-                price: 89.99,
-                category: 'Footwear',
-                rating: 4.7,
-                stock: 40,
-                featured: false,
-                top_product: true,
-                image: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?w=500&q=80',
-            },
-            {
-                id: '9',
-                name: 'Aviator Chronograph',
-                description: 'Pilot-inspired watch with multiple time zones',
-                price: 749.99,
-                category: 'Watches',
-                rating: 4.6,
-                stock: 12,
-                featured: false,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1622434641406-a158123450f9?w=500&q=80',
-            },
-            {
-                id: '10',
-                name: 'Hiking Boots',
-                description: 'Durable waterproof boots for outdoor adventures',
-                price: 229.99,
-                category: 'Footwear',
-                rating: 4.8,
-                stock: 22,
-                featured: false,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1520639888713-7851133b1ed0?w=500&q=80',
-            },
-            {
-                id: '11',
-                name: 'Minimalist Watch',
-                description: 'Ultra-thin design with Japanese quartz movement',
-                price: 299.99,
-                category: 'Watches',
-                rating: 4.5,
-                stock: 28,
-                featured: false,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1611930022073-b7a4ba5fcccd?w=500&q=80',
-            },
-            {
-                id: '12',
-                name: 'Loafers',
-                description: 'Comfortable slip-on loafers for casual elegance',
-                price: 159.99,
-                category: 'Footwear',
-                rating: 4.4,
-                stock: 35,
-                featured: false,
-                top_product: false,
-                image: 'https://images.unsplash.com/photo-1533867617858-e7b97e060509?w=500&q=80',
-            },
-        ]
+        return mockProducts
     }
 
     // Filter and sort products
@@ -251,6 +107,8 @@ const Products = () => {
                                 <option value="All">All Categories</option>
                                 <option value="Watches">Watches</option>
                                 <option value="Footwear">Footwear</option>
+                                <option value="Accessories">Accessories (Wallets)</option>
+                                <option value="Beauty">Beauty (Cosmetics)</option>
                             </select>
                         </div>
 

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../supabase/client'
 import { mockProducts } from '../utils/mockProducts'
 import ProductCard from '../components/ProductCard'
+import HeroSlider from '../components/HeroSlider'
 
 const Home = () => {
     const [featuredProducts, setFeaturedProducts] = useState([])
@@ -69,45 +70,8 @@ const Home = () => {
                 <p>✨ FREE NATIONWIDE DELIVERY ON ALL ORDERS ABOVE RS. 3,000 | 100% AUTHENTIC GUARANTEE</p>
             </div>
 
-            {/* Hero Section - High contrast black & gold luxury styling */}
-            <section className="relative hero-gradient text-white overflow-hidden py-24 md:py-36 border-b border-gray-900">
-                <div className="container-custom relative z-10">
-                    <div className="max-w-4xl mx-auto text-center animate-fade-in">
-                        <span className="text-primary-500 font-display font-semibold uppercase tracking-widest text-sm mb-4 inline-block">
-                            Premium Curated Collection
-                        </span>
-                        <h1 className="text-5xl md:text-7xl font-display font-bold mb-6 leading-tight tracking-tight uppercase">
-                            Timeless Elegance <br/>
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 via-primary-300 to-primary-500">
-                                Crafted For You
-                            </span>
-                        </h1>
-                        <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
-                            Discover our exquisite range of Japanese Casio watches, hand-stitched leather wallets, and premium beauty products. Designed for those who value authenticity and style.
-                        </p>
-                        <div className="flex flex-wrap justify-center gap-5">
-                            <Link
-                                to="/products"
-                                className="bg-primary-500 text-black px-10 py-4 rounded-lg font-bold hover:bg-primary-400 transition-all duration-300 shadow-xl hover:shadow-primary-500/10 transform hover:scale-105 active:scale-95 text-sm uppercase tracking-wider"
-                            >
-                                Shop Collection
-                            </Link>
-                            <Link
-                                to="/about"
-                                className="border border-white/30 text-white px-10 py-4 rounded-lg font-semibold hover:bg-white hover:text-black hover:border-white transition-all duration-300 text-sm uppercase tracking-wider"
-                            >
-                                Our Story
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Ambient Golden Light Gradients */}
-                <div className="absolute top-0 left-0 w-full h-full pointer-events-none opacity-40">
-                    <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-primary-600/15 rounded-full blur-3xl animate-pulse-slow"></div>
-                    <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-primary-700/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
-                </div>
-            </section>
+            {/* Hero Slider Carousel */}
+            <HeroSlider />
 
             {/* Value / Trust Badges Section - Clean, minimal layout */}
             <section className="py-12 bg-gray-50 border-b border-gray-100">

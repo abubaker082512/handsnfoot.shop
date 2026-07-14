@@ -30,6 +30,12 @@ const Navbar = () => {
                         <Link to="/products" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
                             Products
                         </Link>
+                        <Link to="/track-order" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+                            Track Order
+                        </Link>
+                        <Link to="/faq" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
+                            FAQ
+                        </Link>
                         <Link to="/about" className="text-gray-700 hover:text-primary-600 font-medium transition-colors">
                             About
                         </Link>
@@ -106,6 +112,12 @@ const Navbar = () => {
                             </Link>
                             <Link to="/products" className="text-gray-700 hover:text-primary-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
                                 Products
+                            </Link>
+                            <Link to="/track-order" className="text-gray-700 hover:text-primary-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                                Track Order
+                            </Link>
+                            <Link to="/faq" className="text-gray-700 hover:text-primary-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+                                FAQ
                             </Link>
                             <Link to="/about" className="text-gray-700 hover:text-primary-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
                                 About

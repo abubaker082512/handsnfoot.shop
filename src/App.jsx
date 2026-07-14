@@ -22,6 +22,8 @@ import RefundPolicy from './pages/RefundPolicy'
 import PaymentCallback from './pages/PaymentCallback'
 import ShippingPolicy from './pages/ShippingPolicy'
 import TermsConditions from './pages/TermsConditions'
+import TrackOrder from './pages/TrackOrder'
+import FAQ from './pages/FAQ'
 
 function App() {
   return (
@@ -52,6 +54,8 @@ function App() {
                 <Route path="/shipping-policy" element={<ShippingPolicy />} />
                 <Route path="/terms-and-conditions" element={<TermsConditions />} />
                 <Route path="/payment/callback" element={<PaymentCallback />} />
+                <Route path="/track-order" element={<TrackOrder />} />
+                <Route path="/faq" element={<FAQ />} />
               </Routes>
             </main>
             <Footer />

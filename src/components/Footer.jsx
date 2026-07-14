@@ -3,12 +3,12 @@ import Logo from './Logo'
 
 const Footer = () => {
     return (
-        <footer className="bg-gray-900 text-white mt-20">
+        <footer className="bg-black text-white mt-20 border-t border-primary-500/10">
             <div className="container-custom py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand Section */}
                     <div className="col-span-1 md:col-span-2">
-                        <Logo className="h-12 w-auto mb-4" variant="full" />
+                        <Logo className="h-12 w-auto mb-4" variant="full" theme="dark" />
                         <p className="text-gray-400 mb-4">
                             Your premium destination for luxury watches and stylish footwear.
                             We bring you the finest collection of timepieces and shoes that

@@ -30,6 +30,7 @@ CREATE TABLE IF NOT EXISTS orders (
   order_items JSONB NOT NULL,
   total_price NUMERIC(10, 2) NOT NULL CHECK (total_price >= 0),
   status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'paid', 'shipped', 'delivered', 'cancelled')),
+  payment_status VARCHAR(50) DEFAULT 'pending',
   shipping_address JSONB,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()

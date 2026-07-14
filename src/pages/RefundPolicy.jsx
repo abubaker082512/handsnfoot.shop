@@ -86,14 +86,33 @@ const RefundPolicy = () => {
 
                         <section>
                             <h2 className="text-2xl font-display font-bold text-gray-900 mt-8 mb-4">
-                                7. Questions?
+                                7. Currency & Refund Processing (PKR)
                             </h2>
-                            <div className="bg-primary-50 p-6 rounded-lg mt-4">
-                                <p className="text-gray-900">
-                                    Contact us anytime via{' '}
+                            <p>
+                                All orders are processed in Pakistani Rupees (PKR). Consequently, all approved refunds will be calculated, processed, and issued back in PKR to your original payment account. We are not responsible for any fluctuations in exchange rates or third-party bank fees.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-display font-bold text-gray-900 mt-8 mb-4">
+                                8. Questions?
+                            </h2>
+                            <div className="bg-primary-50 p-6 rounded-lg mt-4 space-y-2 text-gray-900">
+                                <p className="font-semibold text-lg">Contact us anytime via:</p>
+                                <p>
+                                    📧 <strong>Email:</strong>{' '}
                                     <a href="mailto:info@handsnfoot.shop" className="text-primary-600 hover:text-primary-700 font-semibold">
                                         info@handsnfoot.shop
                                     </a>
+                                </p>
+                                <p>
+                                    📞 <strong>Phone:</strong>{' '}
+                                    <a href="tel:+923280801100" className="text-primary-600 hover:text-primary-700 font-semibold">
+                                        +92-328-0801100
+                                    </a>
+                                </p>
+                                <p>
+                                    📍 <strong>Address:</strong> G-20, Mobile Arena, SOAN Avenue Road, SOAN Garden, Islamabad
                                 </p>
                             </div>
                         </section>

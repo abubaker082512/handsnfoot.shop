@@ -101,18 +101,36 @@ const PrivacyPolicy = () => {
 
                         <section>
                             <h2 className="text-2xl font-display font-bold text-gray-900 mt-8 mb-4">
-                                8. Contact Us
+                                8. Pricing and Currency (PKR)
+                            </h2>
+                            <p>
+                                All product pricing, shipping fees, and transactions on HandsnFoot are processed exclusively in Pakistani Rupees (PKR). Any return or refund settlements will also be calculated and issued in PKR.
+                            </p>
+                        </section>
+
+                        <section>
+                            <h2 className="text-2xl font-display font-bold text-gray-900 mt-8 mb-4">
+                                9. Contact Us
                             </h2>
                             <p>
                                 If you have any questions about this Privacy Policy or your data, please contact:
                             </p>
-                            <div className="bg-gray-50 p-6 rounded-lg mt-4">
-                                <p className="font-semibold text-gray-900">HandsnFoot</p>
-                                <p className="mt-2">
-                                    📧 Email:{' '}
+                            <div className="bg-gray-50 p-6 rounded-lg mt-4 space-y-2">
+                                <p className="font-semibold text-gray-900 text-lg">HandsnFoot</p>
+                                <p>
+                                    📧 <strong>Email:</strong>{' '}
                                     <a href="mailto:info@handsnfoot.shop" className="text-primary-600 hover:text-primary-700">
                                         info@handsnfoot.shop
                                     </a>
+                                </p>
+                                <p>
+                                    📞 <strong>Phone:</strong>{' '}
+                                    <a href="tel:+923280801100" className="text-primary-600 hover:text-primary-700">
+                                        +92-328-0801100
+                                    </a>
+                                </p>
+                                <p>
+                                    📍 <strong>Address:</strong> G-20, Mobile Arena, SOAN Avenue Road, SOAN Garden, Islamabad
                                 </p>
                             </div>
                         </section>

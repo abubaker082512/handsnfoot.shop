@@ -34,8 +34,8 @@ const Contact = () => {
                                     </svg>
                                     <div>
                                         <p className="text-sm text-gray-600">Phone</p>
-                                        <a href="tel:+923185954599" className="text-lg font-semibold text-primary-600 hover:text-primary-700">
-                                            +92-318-5954599
+                                        <a href="tel:+923280801100" className="text-lg font-semibold text-primary-600 hover:text-primary-700">
+                                            +92-328-0801100
                                         </a>
                                     </div>
                                 </div>
@@ -46,7 +46,7 @@ const Contact = () => {
                                     </svg>
                                     <div>
                                         <p className="text-sm text-gray-600">Location</p>
-                                        <p className="text-lg font-semibold text-gray-900">Islamabad, Pakistan</p>
+                                        <p className="text-lg font-semibold text-gray-900">G-20, Mobile Arena, SOAN Avenue Road, SOAN Garden, Islamabad</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-3">

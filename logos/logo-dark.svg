@@ -1,0 +1,13 @@
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="200" height="60" fill="#000000"/>
+    <g transform="translate(5, 10)">
+        <circle cx="20" cy="15" r="10" stroke="#d4af37" stroke-width="2" fill="none" />
+        <line x1="20" y1="15" x2="20" y2="10" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round" />
+        <line x1="20" y1="15" x2="24" y2="15" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round" />
+        <path d="M 12 35 Q 15 32 20 32 L 28 32 Q 30 32 30 35 L 29 38 Q 28.5 39.5 26 39.5 L 13 39.5 Q 11 39.5 11 37.5 Z" fill="#d4af37" />
+        <line x1="20" y1="25" x2="20" y2="32" stroke="#d4af37" stroke-width="1.5" stroke-dasharray="1.5 1.5" />
+    </g>
+    <text x="50" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="700" fill="#ffffff">Hands</text>
+    <text x="115" y="38" font-family="'Outfit', sans-serif" font-size="20" font-weight="400" fill="#d4af37">n</text>
+    <text x="130" y="38" font-family="'Outfit', sans-serif" font-size="24" font-weight="700" fill="#ffffff">Foot</text>
+</svg>

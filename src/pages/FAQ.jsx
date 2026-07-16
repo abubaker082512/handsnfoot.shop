@@ -23,7 +23,7 @@ const faqs = [
     },
     {
         question: 'Where is your store located?',
-        answer: 'Our physical showroom is located at G-20, Mobile Arena, SOAN Avenue Road, SOAN Garden, Islamabad, Pakistan. You can visit us during business hours to browse our premium collection in person.'
+        answer: 'Our physical showroom is located at 21, Mobile Arena, SOAN Garden, Islamabad, Pakistan. You can visit us during business hours to browse our premium collection in person.'
     }
 ]
 

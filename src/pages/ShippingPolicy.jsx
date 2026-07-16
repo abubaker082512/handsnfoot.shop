@@ -84,7 +84,7 @@ const ShippingPolicy = () => {
                                     </a>
                                 </p>
                                 <p>
-                                    📍 <strong>Address:</strong> G-20, Mobile Arena, SOAN Avenue Road, SOAN Garden, Islamabad
+                                    📍 <strong>Address:</strong> 21, Mobile Arena, SOAN Garden, Islamabad
                                 </p>
                             </div>
                         </section>

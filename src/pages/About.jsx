@@ -87,7 +87,7 @@ const About = () => {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                 </svg>
                                 <h3 className="font-semibold mb-2">Address</h3>
-                                <p className="text-gray-600">G-20, Mobile Arena, SOAN Avenue Road, SOAN Garden, Islamabad</p>
+                                <p className="text-gray-600">21, Mobile Arena, SOAN Garden, Islamabad</p>
                             </div>
                         </div>
                     </div>

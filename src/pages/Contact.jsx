@@ -46,7 +46,7 @@ const Contact = () => {
                                     </svg>
                                     <div>
                                         <p className="text-sm text-gray-600">Location</p>
-                                        <p className="text-lg font-semibold text-gray-900">G-20, Mobile Arena, SOAN Avenue Road, SOAN Garden, Islamabad</p>
+                                        <p className="text-lg font-semibold text-gray-900">21, Mobile Arena, SOAN Garden, Islamabad</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center space-x-3">

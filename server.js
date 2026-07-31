@@ -13,6 +13,10 @@ import rapidgatewaySuccess from './api/rapidgateway-success.js';
 import rapidgatewayFailure from './api/rapidgateway-failure.js';
 import rapidgatewayWebhook from './api/rapidgateway-webhook.js';
 
+import directpayCheckout from './api/directpay-checkout.js';
+import directpaySuccess from './api/directpay-success.js';
+import directpayFailure from './api/directpay-failure.js';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -97,6 +101,33 @@ app.all('/api/rapidgateway-webhook', async (req, res) => {
     await rapidgatewayWebhook(req, res);
   } catch (error) {
     console.error('Error in /api/rapidgateway-webhook:', error);
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+});
+
+app.all('/api/directpay-checkout', async (req, res) => {
+  try {
+    await directpayCheckout(req, res);
+  } catch (error) {
+    console.error('Error in /api/directpay-checkout:', error);
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+});
+
+app.all('/api/directpay-success', async (req, res) => {
+  try {
+    await directpaySuccess(req, res);
+  } catch (error) {
+    console.error('Error in /api/directpay-success:', error);
+    res.status(500).json({ error: 'Internal Server Error', message: error.message });
+  }
+});
+
+app.all('/api/directpay-failure', async (req, res) => {
+  try {
+    await directpayFailure(req, res);
+  } catch (error) {
+    console.error('Error in /api/directpay-failure:', error);
     res.status(500).json({ error: 'Internal Server Error', message: error.message });
   }
 });

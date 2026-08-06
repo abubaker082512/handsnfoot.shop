@@ -23,6 +23,28 @@ function generateHash(params, integritySalt) {
     return hmac.digest('hex').toUpperCase();
 }
 
+// Parse raw body into key-value pairs for URL-encoded form data (needed on Vercel)
+async function parseUrlEncodedBody(req) {
+    // If Express middleware already parsed it, use req.body
+    if (req.body && Object.keys(req.body).length > 0) {
+        return req.body;
+    }
+    // Otherwise read and parse the raw stream (Vercel serverless)
+    return new Promise((resolve, reject) => {
+        let data = '';
+        req.on('data', chunk => { data += chunk.toString(); });
+        req.on('end', () => {
+            try {
+                const parsed = Object.fromEntries(new URLSearchParams(data));
+                resolve(parsed);
+            } catch (e) {
+                resolve({});
+            }
+        });
+        req.on('error', reject);
+    });
+}
+
 export default async function handler(req, res) {
     // JazzCash sends a POST request to the Return URL
     if (req.method !== 'POST') {
@@ -31,7 +53,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const params = req.body;
+        const params = await parseUrlEncodedBody(req);
         console.log('JazzCash Return Params:', JSON.stringify(params, null, 2));
 
         const INTEGRITY_SALT = process.env.JAZZCASH_INTEGRITY_SALT;

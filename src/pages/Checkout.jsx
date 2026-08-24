@@ -43,14 +43,13 @@ const Checkout = () => {
         })
     }
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault()
-        setLoading(true)
 
         try {
             const newOrderId = crypto.randomUUID()
 
-            // Create order in Supabase with explicit pre-generated UUID
+            // Create order object
             const orderData = {
                 id: newOrderId,
                 user_id: user?.id || null,
@@ -61,24 +60,19 @@ const Checkout = () => {
                 shipping_address: formData,
             }
 
-            // Attempt insert with 3-second maximum wait so UI never hangs
-            const insertPromise = supabase.from('orders').insert([orderData])
-            const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
+            // Write order to Supabase asynchronously in background (fire & forget)
+            supabase.from('orders').insert([orderData]).then(({ error }) => {
+                if (error) {
+                    console.error('Background Supabase order creation error:', error)
+                }
+            }).catch(err => console.error('Supabase insert exception:', err))
 
-            const result = await Promise.race([insertPromise, timeoutPromise])
-
-            if (result?.error) {
-                console.error('Supabase order creation error:', result.error)
-            }
-
-            // Store order ID and move to payment step immediately
+            // Instantly set order ID and move to payment step (0ms delay!)
             setOrderId(newOrderId)
             setStep('payment')
         } catch (error) {
-            console.error('Error creating order:', error)
-            alert('Failed to create order: ' + (error.message || 'Please try again.'))
-        } finally {
-            setLoading(false)
+            console.error('Error initiating order:', error)
+            alert('Please try submitting again.')
         }
     }
 

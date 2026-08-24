@@ -12,12 +12,14 @@ dist
 dist-ssr
 *.local
 
-# Environment Variables (IMPORTANT: Protects Supabase credentials)
+# Environment Variables (IMPORTANT: Protects server-side secrets)
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+# .env.production is intentionally committed — it only contains VITE_ public frontend vars
+!.env.production
 
 # Editor directories and files
 .vscode/*

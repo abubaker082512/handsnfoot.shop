@@ -88,10 +88,6 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
             newErrors.mobileNumber = 'Please enter a valid Pakistani mobile number (03XXXXXXXXX)';
         }
 
-        if (!validateCNIC(mwalletData.cnic)) {
-            newErrors.cnic = 'Please enter the last 6 digits of your CNIC';
-        }
-
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
@@ -106,14 +102,11 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                    // No need for Bearer token for this public API route, 
-                    // or you can add custom auth if needed later.
                 },
                 body: JSON.stringify({
                     orderId,
                     amount,
                     mobileNumber: formatMobileNumber(mwalletData.mobileNumber),
-                    cnic: mwalletData.cnic,
                     description: `HandsnFoot Order ${orderId.substring(0, 8)}`
                 })
             });
@@ -230,25 +223,6 @@ const JazzCashPayment = ({ orderId, amount, onSuccess, onError }) => {
                             />
                             {errors.mobileNumber && (
                                 <p className="text-red-500 text-sm mt-1">{errors.mobileNumber}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                CNIC (Last 6 Digits)
-                            </label>
-                            <input
-                                type="text"
-                                value={mwalletData.cnic}
-                                onChange={(e) => setMwalletData({ ...mwalletData, cnic: e.target.value.replace(/\D/g, '').slice(0, 6) })}
-                                placeholder="XXXXXX"
-                                maxLength={6}
-                                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary-500 ${errors.cnic ? 'border-red-500' : 'border-gray-300'
-                                    }`}
-                                disabled={loading}
-                            />
-                            {errors.cnic && (
-                                <p className="text-red-500 text-sm mt-1">{errors.cnic}</p>
                             )}
                         </div>
                     </div>

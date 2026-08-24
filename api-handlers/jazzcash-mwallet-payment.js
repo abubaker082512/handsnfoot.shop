@@ -1,12 +1,13 @@
 import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
-// Helper function to generate HMAC-SHA256 hash
+// Helper function to generate HMAC-SHA256 hash according to JazzCash v1.1 specification
 function generateHash(params, integritySalt) {
     const sortedKeys = Object.keys(params).sort();
     const values = [];
 
     for (const key of sortedKeys) {
+        if (key === 'pp_SecureHash') continue;
         const value = params[key];
         if (value !== null && value !== undefined && value !== '') {
             values.push(String(value));
@@ -22,7 +23,7 @@ function generateHash(params, integritySalt) {
 export default async function handler(req, res) {
     // Handle CORS
     res.setHeader('Access-Control-Allow-Credentials', true);
-    res.setHeader('Access-Control-Allow-Origin', '*'); // Adjust this in production if needed
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
     res.setHeader(
         'Access-Control-Allow-Headers',
@@ -39,130 +40,134 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { orderId, amount, mobileNumber, cnic, description, billReference } = req.body;
+        const { orderId, amount, mobileNumber, description } = req.body;
 
-        // Credentials
-        const MERCHANT_ID = process.env.JAZZCASH_MERCHANT_ID;
-        const PASSWORD = process.env.JAZZCASH_PASSWORD;
-        const INTEGRITY_SALT = process.env.JAZZCASH_INTEGRITY_SALT;
+        // JazzCash v1.1 Credentials
+        const MERCHANT_ID = (process.env.JAZZCASH_MERCHANT_ID || 'MC989920').trim();
+        const PASSWORD = (process.env.JAZZCASH_PASSWORD || '3r9k9de0b1').trim();
+        const INTEGRITY_SALT = (process.env.JAZZCASH_INTEGRITY_SALT || 'z2t4c6q7y2').trim();
+
+        // JazzCash MWallet REST API v1.1 Endpoint
         const MWALLET_API_URL = process.env.JAZZCASH_MWALLET_API_URL ||
-            'https://onlinepayments.jazzcash.com.pk/payment-orchestrator/api/v2/rest/payments/m-wallet';
+            'https://onlinepayments.jazzcash.com.pk/payment-orchestrator/api/v1/rest/payments/m-wallet';
 
-        if (!MERCHANT_ID || !PASSWORD || !INTEGRITY_SALT) {
-            console.error('Missing JazzCash environment variables');
-            return res.status(500).json({ error: 'Server configuration error' });
-        }
+        const BASE_URL = process.env.BASE_URL || 'https://handsnfoot.shop';
+        const RETURN_URL = process.env.JAZZCASH_RETURN_URL || `${BASE_URL}/api/jazzcash-return`;
 
-        // Supabase Client
-        const supabase = createClient(
-            process.env.VITE_SUPABASE_URL,
-            process.env.VITE_SUPABASE_ANON_KEY
-        );
-
-        // --- Transaction Logic ---
-
+        // Format dates in PKT (UTC+5)
         const now = new Date();
-        // Generate TxnRef: TYYYYMMDDHHMMSSmmm
-        const txnRefNo = 'T' + now.getFullYear() +
-            String(now.getMonth() + 1).padStart(2, '0') +
-            String(now.getDate()).padStart(2, '0') +
-            String(now.getHours()).padStart(2, '0') +
-            String(now.getMinutes()).padStart(2, '0') +
-            String(now.getSeconds()).padStart(2, '0') +
-            String(now.getMilliseconds()).padStart(3, '0');
-
-        // JazzCash Date: YYYYMMDDHHMMSS (PKT)
-        // Simple approximate: Usage UTC+5 manually or just use server time if server is configured, 
-        // essentially we just need it to be consistent with expiry.
-        // Let's stick to UTC for consistency + 5 hours.
         const pktDate = new Date(now.getTime() + (5 * 60 * 60 * 1000));
 
         const formatJazzDate = (d) => {
-            return d.toISOString().replace(/[-:T]/g, '').split('.')[0];
+            const year = d.getUTCFullYear();
+            const month = String(d.getUTCMonth() + 1).padStart(2, '0');
+            const day = String(d.getUTCDate()).padStart(2, '0');
+            const hours = String(d.getUTCHours()).padStart(2, '0');
+            const mins = String(d.getUTCMinutes()).padStart(2, '0');
+            const secs = String(d.getUTCSeconds()).padStart(2, '0');
+            return `${year}${month}${day}${hours}${mins}${secs}`;
         };
 
         const pp_TxnDateTime = formatJazzDate(pktDate);
-
-        // Expiry = +1 day
         const expiryDate = new Date(pktDate.getTime() + (24 * 60 * 60 * 1000));
         const pp_TxnExpiryDateTime = formatJazzDate(expiryDate);
 
-        const pp_Amount = String(Math.round(amount * 100)); // Last 2 digits are decimal
-        const pp_BillReference = billReference || txnRefNo;
+        // TxnRefNo: Unique alphanumeric max 20 chars
+        const cleanOrderId = (orderId || 'ORD').replace(/[^a-zA-Z0-9]/g, '').slice(0, 6);
+        const timeStampStr = pp_TxnDateTime.slice(2); // YYMMDDHHMMSS (12 chars)
+        const txnRefNo = `T${cleanOrderId}${timeStampStr}`.slice(0, 20);
 
+        // BillReference: Alphanumeric only, no spaces
+        const billRef = (orderId || txnRefNo).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+
+        // Amount in Paisa (multiplied by 100)
+        const pp_Amount = String(Math.round((parseFloat(amount) || 0) * 100));
+
+        // Format mobile number (must be 11 digits starting with 03 e.g. 03185954599)
+        let formattedMobile = (mobileNumber || '').replace(/\D/g, '');
+        if (formattedMobile.startsWith('92')) {
+            formattedMobile = '0' + formattedMobile.slice(2);
+        }
+
+        // JazzCash MWallet REST API v1.1 Payload
         const params = {
             pp_Amount,
-            pp_BankID: '',
-            pp_BillReference,
-            pp_CNIC: cnic,
-            pp_Description: description || `Order ${orderId}`,
+            pp_BillReference: billRef,
+            pp_Description: description || `Order ${cleanOrderId}`,
             pp_Language: 'EN',
             pp_MerchantID: MERCHANT_ID,
-            pp_MobileNumber: mobileNumber,
             pp_Password: PASSWORD,
-            pp_ProductID: '',
-            pp_SubMerchantID: '',
+            pp_ReturnURL: RETURN_URL,
             pp_TxnCurrency: 'PKR',
             pp_TxnDateTime,
             pp_TxnExpiryDateTime,
             pp_TxnRefNo: txnRefNo,
-            ppmpf_1: '',
+            pp_TxnType: 'MWALLET',
+            pp_Version: '1.1',
+            ppmpf_1: formattedMobile,
             ppmpf_2: '',
             ppmpf_3: '',
             ppmpf_4: '',
             ppmpf_5: ''
         };
 
+        // Generate Secure Hash
         const secureHash = generateHash(params, INTEGRITY_SALT);
         params.pp_SecureHash = secureHash;
 
-        // Log to Supabase (Optional but recommended)
-        // We'll skip complex DB logging here to keep it simple and robust for this check, 
-        // or just fire and forget.
-        // For now, let's just make the call.
+        console.log('Sending JazzCash MWallet v1.1 request:', MWALLET_API_URL, {
+            ...params,
+            pp_Password: '***'
+        });
 
-        console.log('Sending request to JazzCash:', MWALLET_API_URL, params);
-
+        // Submit request to JazzCash API
         const jazzResponse = await fetch(MWALLET_API_URL, {
             method: 'POST',
-            body: JSON.stringify(params),
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(params)
         });
 
         const jazzData = await jazzResponse.json();
-        console.log('JazzCash Response:', jazzData);
+        console.log('JazzCash v1.1 Response:', jazzData);
 
-        // Check response
         const { pp_ResponseCode, pp_ResponseMessage } = jazzData;
-
-        // '000' is usually success, '121' might be success waiting for OTP in some flows, 
-        // but for MWallet standard is often '000'.
         const success = pp_ResponseCode === '000';
 
-        if (success) {
-            // Update order status in Supabase
-            await supabase
-                .from('orders')
-                .update({
-                    payment_status: 'completed',
-                    payment_method: 'mwallet',
-                    jazzcash_txn_ref_no: txnRefNo
-                })
-                .eq('id', orderId);
+        // Update database if Supabase is configured
+        try {
+            const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+            const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.VITE_SUPABASE_ANON_KEY;
+            if (supabaseUrl && supabaseKey) {
+                const supabase = createClient(supabaseUrl, supabaseKey);
+                await supabase
+                    .from('orders')
+                    .update({
+                        payment_status: success ? 'paid' : 'failed',
+                        payment_method: 'mwallet',
+                        jazzcash_txn_ref_no: txnRefNo,
+                        jazzcash_response_code: pp_ResponseCode,
+                        jazzcash_response_message: pp_ResponseMessage,
+                        jazzcash_full_response: jazzData
+                    })
+                    .eq('id', orderId);
+            }
+        } catch (dbErr) {
+            console.error('Supabase update error:', dbErr);
         }
 
         return res.status(200).json({
             success,
-            responseMessage: pp_ResponseMessage,
             pp_ResponseCode,
+            responseMessage: pp_ResponseMessage || 'Transaction processed',
+            txnRefNo,
             data: jazzData
         });
 
     } catch (error) {
-        console.error('API Error:', error);
+        console.error('JazzCash MWallet API Error:', error);
         return res.status(500).json({
             error: 'Internal Server Error',
-            details: error.message
+            message: error.message
         });
     }
 }

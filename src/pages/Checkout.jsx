@@ -48,8 +48,11 @@ const Checkout = () => {
         setLoading(true)
 
         try {
-            // Create order in Supabase
+            const newOrderId = crypto.randomUUID()
+
+            // Create order in Supabase with explicit pre-generated UUID
             const orderData = {
+                id: newOrderId,
                 user_id: user?.id || null,
                 order_items: cart,
                 total_price: getCartTotal() * 1.1, // Including tax
@@ -58,19 +61,21 @@ const Checkout = () => {
                 shipping_address: formData,
             }
 
-            const { data, error } = await supabase
+            const { error } = await supabase
                 .from('orders')
                 .insert([orderData])
-                .select()
 
-            if (error) throw error
+            if (error) {
+                console.error('Supabase order creation error:', error)
+                throw error
+            }
 
-            // Store order ID and move to payment step
-            setOrderId(data[0]?.id)
+            // Store order ID and move to payment step immediately
+            setOrderId(newOrderId)
             setStep('payment')
         } catch (error) {
             console.error('Error creating order:', error)
-            alert('Failed to create order. Please try again.')
+            alert('Failed to create order: ' + (error.message || 'Please try again.'))
         } finally {
             setLoading(false)
         }

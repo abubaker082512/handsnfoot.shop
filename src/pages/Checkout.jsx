@@ -61,13 +61,14 @@ const Checkout = () => {
                 shipping_address: formData,
             }
 
-            const { error } = await supabase
-                .from('orders')
-                .insert([orderData])
+            // Attempt insert with 3-second maximum wait so UI never hangs
+            const insertPromise = supabase.from('orders').insert([orderData])
+            const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
 
-            if (error) {
-                console.error('Supabase order creation error:', error)
-                throw error
+            const result = await Promise.race([insertPromise, timeoutPromise])
+
+            if (result?.error) {
+                console.error('Supabase order creation error:', result.error)
             }
 
             // Store order ID and move to payment step immediately

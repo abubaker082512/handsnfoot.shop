@@ -1,8 +1,23 @@
 {
   "rewrites": [
-    {
-      "source": "/:path*",
-      "destination": "/index.html"
-    }
+    { "source": "/api/jazzcash-card-payment", "destination": "/api/jazzcash?action=card" },
+    { "source": "/api/jazzcash-mwallet-payment", "destination": "/api/jazzcash?action=mwallet" },
+    { "source": "/api/jazzcash-return", "destination": "/api/jazzcash?action=return" },
+    { "source": "/api/jazzcash-status-inquiry", "destination": "/api/jazzcash?action=status" },
+
+    { "source": "/api/rapidgateway-checkout", "destination": "/api/rapidgateway?action=checkout" },
+    { "source": "/api/rapidgateway-success", "destination": "/api/rapidgateway?action=success" },
+    { "source": "/api/rapidgateway-failure", "destination": "/api/rapidgateway?action=failure" },
+    { "source": "/api/rapidgateway-webhook", "destination": "/api/rapidgateway?action=webhook" },
+
+    { "source": "/api/directpay-checkout", "destination": "/api/directpay?action=checkout" },
+    { "source": "/api/directpay-success", "destination": "/api/directpay?action=success" },
+    { "source": "/api/directpay-failure", "destination": "/api/directpay?action=failure" },
+
+    { "source": "/api/easypaisa-ma-payment", "destination": "/api/easypaisa?action=ma" },
+    { "source": "/api/easypaisa-otc-payment", "destination": "/api/easypaisa?action=otc" },
+    { "source": "/api/easypaisa-status-inquiry", "destination": "/api/easypaisa?action=status" },
+
+    { "source": "/:path*", "destination": "/index.html" }
   ]
 }

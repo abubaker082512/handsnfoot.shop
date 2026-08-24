@@ -3,19 +3,19 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 // Import handlers directly
-import jazzcashCardPayment from './api/jazzcash-card-payment.js';
-import jazzcashMwalletPayment from './api/jazzcash-mwallet-payment.js';
-import jazzcashReturn from './api/jazzcash-return.js';
-import jazzcashStatusInquiry from './api/jazzcash-status-inquiry.js';
+import jazzcashCardPayment from './api-handlers/jazzcash-card-payment.js';
+import jazzcashMwalletPayment from './api-handlers/jazzcash-mwallet-payment.js';
+import jazzcashReturn from './api-handlers/jazzcash-return.js';
+import jazzcashStatusInquiry from './api-handlers/jazzcash-status-inquiry.js';
 
-import rapidgatewayCheckout from './api/rapidgateway-checkout.js';
-import rapidgatewaySuccess from './api/rapidgateway-success.js';
-import rapidgatewayFailure from './api/rapidgateway-failure.js';
-import rapidgatewayWebhook from './api/rapidgateway-webhook.js';
+import rapidgatewayCheckout from './api-handlers/rapidgateway-checkout.js';
+import rapidgatewaySuccess from './api-handlers/rapidgateway-success.js';
+import rapidgatewayFailure from './api-handlers/rapidgateway-failure.js';
+import rapidgatewayWebhook from './api-handlers/rapidgateway-webhook.js';
 
-import directpayCheckout from './api/directpay-checkout.js';
-import directpaySuccess from './api/directpay-success.js';
-import directpayFailure from './api/directpay-failure.js';
+import directpayCheckout from './api-handlers/directpay-checkout.js';
+import directpaySuccess from './api-handlers/directpay-success.js';
+import directpayFailure from './api-handlers/directpay-failure.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

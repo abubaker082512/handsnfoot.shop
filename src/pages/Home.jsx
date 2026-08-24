@@ -45,19 +45,27 @@ const Home = () => {
 
     const fetchFeaturedProducts = async () => {
         try {
-            const { data, error } = await supabase
+            const queryPromise = supabase
                 .from('products')
                 .select('*')
                 .eq('featured', true)
                 .limit(8)
 
-            if (error) throw error
-            setFeaturedProducts(data || [])
+            const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
+
+            const result = await Promise.race([queryPromise, timeoutPromise])
+
+            if (result && !result.timeout && !result.error && result.data && result.data.length > 0) {
+                setFeaturedProducts(result.data)
+            } else {
+                // Fallback to mock PKR products (Zamana timepieces & accessories)
+                const featuredMock = mockProducts.filter(p => p.featured).slice(0, 8)
+                setFeaturedProducts(featuredMock.length > 0 ? featuredMock : mockProducts.slice(0, 8))
+            }
         } catch (error) {
             console.error('Error fetching products:', error)
-            // Use mock data as fallback (PKR products from Zamana.pk)
             const featuredMock = mockProducts.filter(p => p.featured).slice(0, 8)
-            setFeaturedProducts(featuredMock)
+            setFeaturedProducts(featuredMock.length > 0 ? featuredMock : mockProducts.slice(0, 8))
         } finally {
             setLoading(false)
         }

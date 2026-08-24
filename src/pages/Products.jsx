@@ -18,17 +18,23 @@ const Products = () => {
 
     const fetchProducts = async () => {
         try {
-            const { data, error } = await supabase
+            const queryPromise = supabase
                 .from('products')
                 .select('*')
                 .order('created_at', { ascending: false })
 
-            if (error) throw error
-            setProducts(data || [])
+            const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
+
+            const result = await Promise.race([queryPromise, timeoutPromise])
+
+            if (result && !result.timeout && !result.error && result.data && result.data.length > 0) {
+                setProducts(result.data)
+            } else {
+                setProducts(mockProducts)
+            }
         } catch (error) {
             console.error('Error fetching products:', error)
-            // Use mock data if Supabase is not configured
-            setProducts(getAllMockProducts())
+            setProducts(mockProducts)
         } finally {
             setLoading(false)
         }

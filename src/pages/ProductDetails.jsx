@@ -8,52 +8,52 @@ import { getMockProduct, getMockRelatedProducts } from '../utils/mockProducts'
 const ProductDetails = () => {
     const { id } = useParams()
     const { addToCart } = useCart()
-    const [product, setProduct] = useState(null)
-    const [relatedProducts, setRelatedProducts] = useState([])
-    const [loading, setLoading] = useState(true)
+
+    // Initialize state synchronously with mock data so page renders INSTANTLY (0ms delay)
+    const initialMock = getMockProduct(id)
+    const [product, setProduct] = useState(initialMock)
+    const [relatedProducts, setRelatedProducts] = useState(
+        initialMock ? getMockRelatedProducts(initialMock.category, id) : []
+    )
+    const [loading, setLoading] = useState(!initialMock)
     const [quantity, setQuantity] = useState(1)
 
     useEffect(() => {
+        // Sync state when ID parameter changes
+        const mock = getMockProduct(id)
+        if (mock) {
+            setProduct(mock)
+            setRelatedProducts(getMockRelatedProducts(mock.category, id))
+            setLoading(false)
+        } else {
+            setLoading(true)
+        }
+
         fetchProduct()
     }, [id])
 
     const fetchProduct = async () => {
         try {
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
-            let foundProduct = null
+            if (!isUUID) return
 
-            if (isUUID) {
-                const queryPromise = supabase
-                    .from('products')
-                    .select('*')
-                    .eq('id', id)
-                    .maybeSingle()
+            const queryPromise = supabase
+                .from('products')
+                .select('*')
+                .eq('id', id)
+                .maybeSingle()
 
-                const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
+            const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 2000, { timeout: true }))
+            const result = await Promise.race([queryPromise, timeoutPromise])
 
-                const result = await Promise.race([queryPromise, timeoutPromise])
-
-                if (result && !result.timeout && !result.error && result.data) {
-                    foundProduct = result.data
+            if (result && !result.timeout && !result.error && result.data) {
+                setProduct(result.data)
+                if (result.data.category) {
+                    fetchRelatedProducts(result.data.category)
                 }
             }
-
-            if (!foundProduct) {
-                foundProduct = getMockProduct(id)
-            }
-
-            setProduct(foundProduct)
-
-            if (foundProduct?.category) {
-                fetchRelatedProducts(foundProduct.category)
-            }
         } catch (error) {
-            console.error('Error fetching product:', error)
-            const mockProduct = getMockProduct(id)
-            setProduct(mockProduct)
-            if (mockProduct?.category) {
-                fetchRelatedProducts(mockProduct.category)
-            }
+            console.error('Error fetching product from Supabase:', error)
         } finally {
             setLoading(false)
         }
@@ -62,45 +62,33 @@ const ProductDetails = () => {
     const fetchRelatedProducts = async (category) => {
         try {
             const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
-            let related = []
+            if (!isUUID) return
 
-            if (isUUID) {
-                const queryPromise = supabase
-                    .from('products')
-                    .select('*')
-                    .eq('category', category)
-                    .neq('id', id)
-                    .limit(4)
+            const queryPromise = supabase
+                .from('products')
+                .select('*')
+                .eq('category', category)
+                .neq('id', id)
+                .limit(4)
 
-                const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
+            const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 2000, { timeout: true }))
+            const result = await Promise.race([queryPromise, timeoutPromise])
 
-                const result = await Promise.race([queryPromise, timeoutPromise])
-
-                if (result && !result.timeout && !result.error && result.data && result.data.length > 0) {
-                    related = result.data
-                }
+            if (result && !result.timeout && !result.error && result.data && result.data.length > 0) {
+                setRelatedProducts(result.data)
             }
-
-            if (!related || related.length === 0) {
-                related = getMockRelatedProducts(category, id)
-            }
-
-            setRelatedProducts(related)
         } catch (error) {
-            console.error('Error fetching related products:', error)
-            setRelatedProducts(getMockRelatedProducts(category, id))
+            console.error('Error fetching related products from Supabase:', error)
         }
     }
 
-    // Centralized mock data mapping
-    // Handled by imports above
-
     const handleAddToCart = () => {
+        if (!product) return
         addToCart(product, quantity)
         setQuantity(1)
     }
 
-    const renderStars = (rating) => {
+    const renderStars = (rating = 5) => {
         const stars = []
         const fullStars = Math.floor(rating)
 
@@ -124,7 +112,7 @@ const ProductDetails = () => {
         return stars
     }
 
-    if (loading) {
+    if (loading && !product) {
         return (
             <div className="flex justify-center items-center min-h-screen">
                 <div className="spinner"></div>
@@ -148,114 +136,106 @@ const ProductDetails = () => {
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="container-custom">
-                {/* Breadcrumb */}
-                <nav className="mb-8 text-sm">
-                    <Link to="/" className="text-gray-600 hover:text-primary-600">Home</Link>
-                    <span className="mx-2 text-gray-400">/</span>
-                    <Link to="/products" className="text-gray-600 hover:text-primary-600">Products</Link>
-                    <span className="mx-2 text-gray-400">/</span>
-                    <span className="text-gray-900">{product.name}</span>
-                </nav>
+                {/* Breadcrumbs */}
+                <div className="text-sm text-gray-500 mb-6 flex items-center gap-2">
+                    <Link to="/" className="hover:text-primary-600">Home</Link>
+                    <span>/</span>
+                    <Link to="/products" className="hover:text-primary-600">Products</Link>
+                    <span>/</span>
+                    <span className="text-gray-900 font-medium">{product.name}</span>
+                </div>
 
-                {/* Product Details */}
-                <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-12">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
-                        {/* Product Image */}
-                        <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+                {/* Product Main Section */}
+                <div className="bg-white rounded-xl shadow-md p-6 lg:p-10 mb-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        {/* Image */}
+                        <div className="relative aspect-square rounded-lg overflow-hidden bg-gray-100 border border-gray-100">
                             <img
                                 src={product.image}
                                 alt={product.name}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover object-center"
                             />
+                            {product.featured && (
+                                <span className="absolute top-4 left-4 bg-black text-white text-xs px-3 py-1 font-bold uppercase tracking-wider rounded">
+                                    Featured
+                                </span>
+                            )}
                         </div>
 
-                        {/* Product Info */}
-                        <div className="flex flex-col">
-                            <div className="mb-4">
-                                <span className="badge badge-primary">{product.category}</span>
-                                {product.featured && (
-                                    <span className="badge bg-accent-600 text-white ml-2">Featured</span>
-                                )}
-                            </div>
-
-                            <h1 className="text-4xl font-display font-bold mb-4">{product.name}</h1>
-
-                            {/* Rating */}
-                            {product.rating && (
-                                <div className="flex items-center space-x-2 mb-6 star-rating">
-                                    {renderStars(product.rating)}
-                                    <span className="text-lg text-gray-600">({product.rating})</span>
-                                </div>
-                            )}
-
-                            {/* Price */}
-                            <div className="mb-6">
-                                <span className="text-5xl font-bold text-primary-600">
-                                    Rs {product.price.toFixed(2)}
+                        {/* Content */}
+                        <div className="flex flex-col justify-between">
+                            <div>
+                                <span className="text-primary-600 text-xs font-semibold uppercase tracking-widest">
+                                    {product.category}
                                 </span>
-                            </div>
+                                <h1 className="text-3xl font-display font-bold text-gray-900 mt-1 mb-3">
+                                    {product.name}
+                                </h1>
 
-                            {/* Description */}
-                            <p className="text-gray-700 text-lg mb-6 leading-relaxed">
-                                {product.description}
-                            </p>
-
-                            {/* Stock Status */}
-                            <div className="mb-6">
-                                {product.stock > 0 ? (
-                                    <span className="badge badge-success text-base">
-                                        In Stock ({product.stock} available)
+                                <div className="flex items-center gap-2 mb-4">
+                                    <div className="flex text-amber-400">
+                                        {renderStars(product.rating || 5)}
+                                    </div>
+                                    <span className="text-sm text-gray-500 font-medium">
+                                        {product.rating || 5.0} / 5.0
                                     </span>
-                                ) : (
-                                    <span className="badge badge-danger text-base">Out of Stock</span>
-                                )}
-                            </div>
-
-                            {/* Quantity and Add to Cart */}
-                            <div className="flex items-center space-x-4 mb-6">
-                                <div className="flex items-center space-x-2">
-                                    <label className="font-medium">Quantity:</label>
-                                    <button
-                                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                                        className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded hover:bg-gray-100 transition-colors"
-                                    >
-                                        -
-                                    </button>
-                                    <span className="w-12 text-center font-semibold text-lg">{quantity}</span>
-                                    <button
-                                        onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
-                                        disabled={quantity >= product.stock}
-                                        className="w-10 h-10 flex items-center justify-center border-2 border-gray-300 rounded hover:bg-gray-100 transition-colors disabled:opacity-50"
-                                    >
-                                        +
-                                    </button>
                                 </div>
+
+                                <div className="text-3xl font-bold text-gray-900 mb-6">
+                                    Rs {Number(product.price).toLocaleString()}
+                                </div>
+
+                                <p className="text-gray-600 leading-relaxed mb-6">
+                                    {product.description}
+                                </p>
                             </div>
 
-                            <button
-                                onClick={handleAddToCart}
-                                disabled={product.stock === 0}
-                                className={`btn btn-primary text-lg w-full ${product.stock === 0 ? 'opacity-50 cursor-not-allowed' : ''
-                                    }`}
-                            >
-                                Add to Cart
-                            </button>
+                            {/* Actions */}
+                            <div className="space-y-4 pt-6 border-t border-gray-100">
+                                <div className="flex items-center gap-4">
+                                    <label className="text-sm font-medium text-gray-700">Quantity:</label>
+                                    <div className="flex items-center border border-gray-300 rounded-lg">
+                                        <button
+                                            type="button"
+                                            onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                                            className="px-3 py-1.5 text-gray-600 hover:bg-gray-100 text-lg font-bold"
+                                        >
+                                            -
+                                        </button>
+                                        <span className="px-4 font-semibold text-gray-800">{quantity}</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => setQuantity(quantity + 1)}
+                                            className="px-3 py-1.5 text-gray-600 hover:bg-gray-100 text-lg font-bold"
+                                        >
+                                            +
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <button
+                                    onClick={handleAddToCart}
+                                    className="w-full bg-black text-white hover:bg-primary-500 hover:text-black py-4 rounded-lg font-bold uppercase tracking-wider transition-all duration-300 shadow-md hover:shadow-xl flex items-center justify-center gap-2"
+                                >
+                                    <span>🛒</span> Add to Shopping Bag
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 {/* Related Products */}
                 {relatedProducts.length > 0 && (
-                    <section>
-                        <h2 className="text-3xl font-display font-bold mb-6 gradient-text">
+                    <div className="mt-16">
+                        <h2 className="text-2xl font-display font-bold text-gray-900 mb-6">
                             Related Products
                         </h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {relatedProducts.map((relatedProduct) => (
-                                <ProductCard key={relatedProduct.id} product={relatedProduct} />
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                            {relatedProducts.map((relProduct) => (
+                                <ProductCard key={relProduct.id} product={relProduct} />
                             ))}
                         </div>
-                    </section>
+                    </div>
                 )}
             </div>
         </div>

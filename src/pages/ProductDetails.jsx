@@ -19,21 +19,39 @@ const ProductDetails = () => {
 
     const fetchProduct = async () => {
         try {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .eq('id', id)
-                .single()
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+            let foundProduct = null
 
-            if (error) throw error
-            setProduct(data)
-            fetchRelatedProducts(data.category)
+            if (isUUID) {
+                const queryPromise = supabase
+                    .from('products')
+                    .select('*')
+                    .eq('id', id)
+                    .maybeSingle()
+
+                const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
+
+                const result = await Promise.race([queryPromise, timeoutPromise])
+
+                if (result && !result.timeout && !result.error && result.data) {
+                    foundProduct = result.data
+                }
+            }
+
+            if (!foundProduct) {
+                foundProduct = getMockProduct(id)
+            }
+
+            setProduct(foundProduct)
+
+            if (foundProduct?.category) {
+                fetchRelatedProducts(foundProduct.category)
+            }
         } catch (error) {
             console.error('Error fetching product:', error)
-            // Use mock data
             const mockProduct = getMockProduct(id)
             setProduct(mockProduct)
-            if (mockProduct) {
+            if (mockProduct?.category) {
                 fetchRelatedProducts(mockProduct.category)
             }
         } finally {
@@ -43,15 +61,31 @@ const ProductDetails = () => {
 
     const fetchRelatedProducts = async (category) => {
         try {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*')
-                .eq('category', category)
-                .neq('id', id)
-                .limit(4)
+            const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)
+            let related = []
 
-            if (error) throw error
-            setRelatedProducts(data || [])
+            if (isUUID) {
+                const queryPromise = supabase
+                    .from('products')
+                    .select('*')
+                    .eq('category', category)
+                    .neq('id', id)
+                    .limit(4)
+
+                const timeoutPromise = new Promise((resolve) => setTimeout(resolve, 3000, { timeout: true }))
+
+                const result = await Promise.race([queryPromise, timeoutPromise])
+
+                if (result && !result.timeout && !result.error && result.data && result.data.length > 0) {
+                    related = result.data
+                }
+            }
+
+            if (!related || related.length === 0) {
+                related = getMockRelatedProducts(category, id)
+            }
+
+            setRelatedProducts(related)
         } catch (error) {
             console.error('Error fetching related products:', error)
             setRelatedProducts(getMockRelatedProducts(category, id))

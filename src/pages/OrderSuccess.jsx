@@ -8,8 +8,8 @@ const OrderSuccess = () => {
     const txnRefParam = searchParams.get('txnRef')
 
     const [order, setOrder] = useState(null)
-    const [loading, setLoading] = useState(true)
-    const [paymentStatus, setPaymentStatus] = useState('Checking...')
+    const [loading, setLoading] = useState(false)
+    const [paymentStatus, setPaymentStatus] = useState('Successful')
     const [paymentDetails, setPaymentDetails] = useState(null)
 
     useEffect(() => {
@@ -92,14 +92,6 @@ const OrderSuccess = () => {
     const parseShippingAddress = (address) => {
         if (!address) return { address: 'N/A' }
         return typeof address === 'string' ? { address } : address
-    }
-
-    if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary-200 border-t-primary-600"></div>
-            </div>
-        )
     }
 
     const shippingAddr = parseShippingAddress(order?.shipping_address)

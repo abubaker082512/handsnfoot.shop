@@ -42,10 +42,10 @@ export default async function handler(req, res) {
     try {
         const { orderId, amount, mobileNumber, description } = req.body;
 
-        // JazzCash v1.1 Credentials
-        const MERCHANT_ID = (process.env.JAZZCASH_MERCHANT_ID || 'MC989920').trim();
-        const PASSWORD = (process.env.JAZZCASH_PASSWORD || '3r9k9de0b1').trim();
-        const INTEGRITY_SALT = (process.env.JAZZCASH_INTEGRITY_SALT || 'z2t4c6q7y2').trim();
+        // JazzCash Live Credentials
+        const MERCHANT_ID = (process.env.JAZZCASH_MERCHANT_ID || '74584985').trim();
+        const PASSWORD = (process.env.JAZZCASH_PASSWORD || 'qo38057jbm').trim();
+        const INTEGRITY_SALT = (process.env.JAZZCASH_INTEGRITY_SALT || 'z35f76uo0m').trim();
 
         // JazzCash MWallet REST API v1.1 Endpoint
         const MWALLET_API_URL = process.env.JAZZCASH_MWALLET_API_URL ||

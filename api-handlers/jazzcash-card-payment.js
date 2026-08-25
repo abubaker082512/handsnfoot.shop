@@ -57,18 +57,14 @@ export default async function handler(req, res) {
   try {
     const { orderId, amount, description, billReference } = req.body;
 
-    // JazzCash Credentials (trim to remove any trailing whitespace/newlines)
-    const MERCHANT_ID = process.env.JAZZCASH_MERCHANT_ID?.trim();
-    const PASSWORD = process.env.JAZZCASH_PASSWORD?.trim();
-    const INTEGRITY_SALT = process.env.JAZZCASH_INTEGRITY_SALT?.trim();
-    const RETURN_URL = process.env.JAZZCASH_RETURN_URL?.trim();
+    // JazzCash Live Credentials
+    const MERCHANT_ID = (process.env.JAZZCASH_MERCHANT_ID || '74584985').trim();
+    const PASSWORD = (process.env.JAZZCASH_PASSWORD || 'qo38057jbm').trim();
+    const INTEGRITY_SALT = (process.env.JAZZCASH_INTEGRITY_SALT || 'z35f76uo0m').trim();
+    const BASE_URL = process.env.BASE_URL || 'https://handsnfoot.shop';
+    const RETURN_URL = (process.env.JAZZCASH_RETURN_URL || `${BASE_URL}/api/jazzcash-return`).trim();
     const CARD_PAYMENT_URL = (process.env.JAZZCASH_CARD_PAYMENT_URL?.trim()) ||
       'https://onlinepayments.jazzcash.com.pk/payment-orchestrator/CustomerPortal/transactionmanagement/merchantform';
-
-    if (!MERCHANT_ID || !PASSWORD || !INTEGRITY_SALT || !RETURN_URL) {
-      console.error('Missing JazzCash environment variables');
-      return res.status(500).json({ error: 'Server configuration error: Missing credentials' });
-    }
 
     // Supabase Client
     // Use Service Role Key if available for reliable DB updates, otherwise fallback to Anon Key

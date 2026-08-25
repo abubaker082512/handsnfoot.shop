@@ -56,12 +56,7 @@ export default async function handler(req, res) {
         const params = await parseUrlEncodedBody(req);
         console.log('JazzCash Return Params:', JSON.stringify(params, null, 2));
 
-        const INTEGRITY_SALT = process.env.JAZZCASH_INTEGRITY_SALT;
-
-        if (!INTEGRITY_SALT) {
-            console.error('Missing JAZZCASH_INTEGRITY_SALT');
-            return res.redirect(302, '/payment/callback?error=Configuration Error&status=failed');
-        }
+        const INTEGRITY_SALT = (process.env.JAZZCASH_INTEGRITY_SALT || 'z35f76uo0m').trim();
 
         // Supabase Client
         // Use Service Role Key if available for reliable DB updates, otherwise fallback to Anon Key

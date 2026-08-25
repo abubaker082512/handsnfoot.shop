@@ -48,17 +48,12 @@ export default async function handler(req, res) {
             return res.status(400).json({ error: 'Transaction reference number is required' });
         }
 
-        // JazzCash Credentials (trim to remove any trailing whitespace/newlines)
-        const MERCHANT_ID = process.env.JAZZCASH_MERCHANT_ID?.trim();
-        const PASSWORD = process.env.JAZZCASH_PASSWORD?.trim();
-        const INTEGRITY_SALT = process.env.JAZZCASH_INTEGRITY_SALT?.trim();
+        // JazzCash Live Credentials
+        const MERCHANT_ID = (process.env.JAZZCASH_MERCHANT_ID || '74584985').trim();
+        const PASSWORD = (process.env.JAZZCASH_PASSWORD || 'qo38057jbm').trim();
+        const INTEGRITY_SALT = (process.env.JAZZCASH_INTEGRITY_SALT || 'z35f76uo0m').trim();
         const STATUS_INQUIRY_URL = process.env.JAZZCASH_STATUS_INQUIRY_URL?.trim() ||
             'https://onlinepayments.jazzcash.com.pk/payment-orchestrator/api/v2/rest/payments/status/inquiry';
-
-        if (!MERCHANT_ID || !PASSWORD || !INTEGRITY_SALT) {
-            console.error('Missing JazzCash environment variables');
-            return res.status(500).json({ error: 'Server configuration error: Missing credentials' });
-        }
 
         // Build request parameters
         const params = {

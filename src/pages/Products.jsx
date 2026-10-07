@@ -94,23 +94,47 @@ const Products = () => {
             <div className="container-custom">
                 {/* Header */}
                 <div className="mb-8">
-                    <h1 className="text-4xl font-display font-bold mb-4 gradient-text">
-                        All Products
+                    <h1 className="text-4xl font-display font-bold mb-3 gradient-text">
+                        {selectedCategory === 'All' ? 'All Luxury Collections' : `${selectedCategory} Collection`}
                     </h1>
-                    <p className="text-gray-600 text-lg">
-                        Explore our complete collection of luxury watches and premium footwear
+                    <p className="text-gray-600 text-base">
+                        Explore our complete catalog of {products.length.toLocaleString()} premium items curated for you
                     </p>
                 </div>
 
+                {/* Quick Category Navigation Pills */}
+                <div className="flex flex-wrap gap-2 mb-6">
+                    {[
+                        { name: 'All', icon: '🛍️' },
+                        { name: 'Jewelry', icon: '✨' },
+                        { name: 'Watches', icon: '⌚' },
+                        { name: 'Accessories', icon: '👜' },
+                        { name: 'Beauty', icon: '💄' },
+                        { name: 'Footwear', icon: '👟' }
+                    ].map((cat) => (
+                        <button
+                            key={cat.name}
+                            onClick={() => setSelectedCategory(cat.name)}
+                            className={`px-5 py-2.5 rounded-full font-bold text-xs tracking-wider uppercase transition-all flex items-center gap-2 shadow-xs cursor-pointer ${
+                                selectedCategory === cat.name
+                                    ? 'bg-amber-600 text-white shadow-md scale-105 ring-2 ring-amber-400'
+                                    : 'bg-white text-gray-800 hover:bg-gray-100 border border-gray-200 hover:border-gray-300'
+                            }`}
+                        >
+                            <span>{cat.icon}</span> {cat.name}
+                        </button>
+                    ))}
+                </div>
+
                 {/* Filters and Search */}
-                <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                <div className="bg-white rounded-xl shadow-md p-6 mb-8 border border-gray-100">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {/* Search */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Search Catalog</label>
                             <input
                                 type="text"
-                                placeholder="Search products..."
+                                placeholder="Search by name, brand, or style..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="input"
@@ -119,7 +143,7 @@ const Products = () => {
 
                         {/* Category Filter */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Category Filter</label>
                             <select
                                 value={selectedCategory}
                                 onChange={(e) => setSelectedCategory(e.target.value)}
@@ -136,7 +160,7 @@ const Products = () => {
 
                         {/* Sort */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">Sort By</label>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-gray-700 mb-2">Sort By</label>
                             <select
                                 value={sortBy}
                                 onChange={(e) => setSortBy(e.target.value)}

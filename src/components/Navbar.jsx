@@ -31,16 +31,24 @@ const Navbar = () => {
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden md:flex items-center space-x-7">
+                        <div className="hidden md:flex items-center space-x-6">
                             <Link to="/" className="text-gray-800 hover:text-primary-600 font-semibold uppercase text-xs tracking-widest transition-colors py-2 border-b-2 border-transparent hover:border-primary-500">
                                 Home
                             </Link>
 
-                            <Link to="/products?category=Jewelry" className="text-primary-800 hover:text-primary-600 font-bold uppercase text-xs tracking-widest transition-all py-2 border-b-2 border-primary-500 flex items-center gap-1.5 bg-primary-50 px-3 rounded-full">
+                            <Link to="/products?category=Men" className="text-gray-900 hover:text-amber-600 font-extrabold uppercase text-xs tracking-widest transition-all py-2 flex items-center gap-1 hover:bg-gray-100 px-3 rounded-full border border-gray-200">
+                                <span>👨</span> Men
+                            </Link>
+
+                            <Link to="/products?category=Women" className="text-gray-900 hover:text-amber-600 font-extrabold uppercase text-xs tracking-widest transition-all py-2 flex items-center gap-1 hover:bg-gray-100 px-3 rounded-full border border-gray-200">
+                                <span>👩</span> Women
+                            </Link>
+
+                            <Link to="/products?category=Jewelry" className="text-amber-900 hover:text-amber-600 font-bold uppercase text-xs tracking-widest transition-all py-2 flex items-center gap-1.5 bg-amber-50 px-3 rounded-full border border-amber-200">
                                 <span>✨</span> Jewelry
                             </Link>
 
-                            <Link to="/products?category=Watches" className="text-gray-900 hover:text-primary-600 font-bold uppercase text-xs tracking-widest transition-all py-2 border-b-2 border-gray-800 flex items-center gap-1.5 hover:bg-gray-50 px-3 rounded-full">
+                            <Link to="/products?category=Watches" className="text-gray-900 hover:text-amber-600 font-bold uppercase text-xs tracking-widest transition-all py-2 flex items-center gap-1.5 hover:bg-gray-50 px-3 rounded-full">
                                 <span>⌚</span> Watches
                             </Link>
 
@@ -49,7 +57,7 @@ const Navbar = () => {
                             </Link>
 
                             <Link to="/products" className="text-gray-800 hover:text-primary-600 font-semibold uppercase text-xs tracking-widest transition-colors py-2 border-b-2 border-transparent hover:border-primary-500">
-                                All Catalog
+                                Catalog
                             </Link>
 
                             <Link to="/track-order" className="text-gray-800 hover:text-primary-600 font-semibold uppercase text-xs tracking-widest transition-colors py-2 border-b-2 border-transparent hover:border-primary-500">
@@ -128,7 +136,13 @@ const Navbar = () => {
                                 <Link to="/" className="text-gray-800 hover:text-primary-600 py-1" onClick={() => setIsMobileMenuOpen(false)}>
                                     Home
                                 </Link>
-                                <Link to="/products?category=Jewelry" className="text-primary-700 font-bold flex items-center gap-2 py-2 px-3 bg-primary-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
+                                <Link to="/products?category=Men" className="text-gray-900 font-bold flex items-center gap-2 py-2 px-3 bg-gray-100 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
+                                    👨 Men's Collection
+                                </Link>
+                                <Link to="/products?category=Women" className="text-gray-900 font-bold flex items-center gap-2 py-2 px-3 bg-gray-100 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
+                                    👩 Women's Collection
+                                </Link>
+                                <Link to="/products?category=Jewelry" className="text-amber-900 font-bold flex items-center gap-2 py-2 px-3 bg-amber-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>
                                     ✨ Jewelry Collection
                                 </Link>
                                 <Link to="/products?category=Watches" className="text-gray-900 font-bold flex items-center gap-2 py-2 px-3 bg-gray-50 rounded-lg" onClick={() => setIsMobileMenuOpen(false)}>

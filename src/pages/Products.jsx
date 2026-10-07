@@ -80,9 +80,21 @@ const Products = () => {
     // Filter and sort products
     const filteredProducts = products
         .filter(product => {
+            if (!product || !product.name) return false
             const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.description.toLowerCase().includes(searchTerm.toLowerCase())
-            const matchesCategory = selectedCategory === 'All' || product.category === selectedCategory
+                (product.description || '').toLowerCase().includes(searchTerm.toLowerCase())
+            
+            let matchesCategory = false
+            if (selectedCategory === 'All') {
+                matchesCategory = true
+            } else if (selectedCategory === 'Men') {
+                matchesCategory = (product.category === 'Watches' || product.category === 'Accessories') && !/women|ladies|girl|female|bangle|choker|necklace|earring|bindiya/i.test(product.name)
+            } else if (selectedCategory === 'Women') {
+                matchesCategory = product.category === 'Jewelry' || product.category === 'Beauty' || /women|ladies|girl|female|bangle|choker|necklace|earring|bindiya/i.test(product.name)
+            } else {
+                matchesCategory = product.category === selectedCategory
+            }
+
             return matchesSearch && matchesCategory
         })
         .sort((a, b) => {
@@ -113,10 +125,10 @@ const Products = () => {
                 {/* Header */}
                 <div className="mb-8">
                     <h1 className="text-4xl font-display font-bold mb-3 gradient-text">
-                        {selectedCategory === 'All' ? 'All Luxury Collections' : `${selectedCategory} Collection`}
+                        {selectedCategory === 'All' ? 'All Luxury Collections' : `${selectedCategory}'s Collection`}
                     </h1>
                     <p className="text-gray-600 text-base">
-                        Explore our complete catalog of {products.length.toLocaleString()} premium items curated for you
+                        Explore our complete catalog of {filteredProducts.length.toLocaleString()} premium items curated for you
                     </p>
                 </div>
 
@@ -124,10 +136,11 @@ const Products = () => {
                 <div className="flex flex-wrap gap-2 mb-6">
                     {[
                         { name: 'All', icon: '🛍️' },
+                        { name: 'Men', icon: '👨' },
+                        { name: 'Women', icon: '👩' },
                         { name: 'Jewelry', icon: '✨' },
                         { name: 'Watches', icon: '⌚' },
-                        { name: 'Accessories', icon: '👜' },
-                        { name: 'Beauty', icon: '💄' }
+                        { name: 'Accessories', icon: '👜' }
                     ].map((cat) => (
                         <button
                             key={cat.name}
@@ -167,10 +180,11 @@ const Products = () => {
                                 className="input"
                             >
                                 <option value="All">All Categories</option>
+                                <option value="Men">Men's Collection</option>
+                                <option value="Women">Women's Collection</option>
                                 <option value="Jewelry">Jewelry</option>
                                 <option value="Watches">Watches</option>
                                 <option value="Accessories">Accessories</option>
-                                <option value="Beauty">Beauty</option>
                             </select>
                         </div>
 

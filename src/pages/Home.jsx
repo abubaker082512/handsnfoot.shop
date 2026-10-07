@@ -55,18 +55,35 @@ const Home = () => {
 
             const result = await Promise.race([queryPromise, timeoutPromise])
 
-            let dbProducts = []
-            if (result && !result.timeout && !result.error && Array.isArray(result.data)) {
-                dbProducts = result.data
+            const oldExcludedNames = [
+                'designer leather sneakers',
+                'premium running shoes',
+                'luxury chronograph watch',
+                'mekeyxecret natural long-lasting liquid blush',
+                'the vertical vogue',
+                'the futuristic: a leather bifold wallet',
+                'the artisan: leather cardholder'
+            ]
+
+            const isValidProduct = (item) => {
+                if (!item || !item.name) return false
+                if (item.category === 'Footwear') return false
+                const nameLower = item.name.toLowerCase().trim()
+                return !oldExcludedNames.some(ex => nameLower.includes(ex))
             }
 
-            const featuredMock = mockProducts.filter(p => p.featured)
+            let dbProducts = []
+            if (result && !result.timeout && !result.error && Array.isArray(result.data)) {
+                dbProducts = result.data.filter(isValidProduct)
+            }
+
+            const featuredMock = mockProducts.filter(p => p.featured && isValidProduct(p))
             const combined = [...dbProducts, ...featuredMock]
             const uniqueProducts = []
             const seenKeys = new Set()
 
             for (const item of combined) {
-                if (!item) continue
+                if (!item || !isValidProduct(item)) continue
                 const key = item.name ? item.name.toLowerCase().trim() : item.id
                 if (!seenKeys.has(key)) {
                     seenKeys.add(key)
@@ -74,11 +91,11 @@ const Home = () => {
                 }
             }
 
-            setFeaturedProducts(uniqueProducts.slice(0, 12))
+            setFeaturedProducts(uniqueProducts.slice(0, 8))
         } catch (error) {
             console.error('Error fetching products:', error)
-            const featuredMock = mockProducts.filter(p => p.featured).slice(0, 12)
-            setFeaturedProducts(featuredMock.length > 0 ? featuredMock : mockProducts.slice(0, 12))
+            const featuredMock = mockProducts.filter(p => p.featured).slice(0, 8)
+            setFeaturedProducts(featuredMock.length > 0 ? featuredMock : mockProducts.slice(0, 8))
         } finally {
             setLoading(false)
         }

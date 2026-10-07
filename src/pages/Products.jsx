@@ -27,18 +27,36 @@ const Products = () => {
 
             const result = await Promise.race([queryPromise, timeoutPromise])
 
+            const oldExcludedNames = [
+                'designer leather sneakers',
+                'premium running shoes',
+                'luxury chronograph watch',
+                'mekeyxecret natural long-lasting liquid blush',
+                'the vertical vogue',
+                'the futuristic: a leather bifold wallet',
+                'the artisan: leather cardholder'
+            ]
+
+            const isValidProduct = (item) => {
+                if (!item || !item.name) return false
+                if (item.category === 'Footwear') return false
+                const nameLower = item.name.toLowerCase().trim()
+                return !oldExcludedNames.some(ex => nameLower.includes(ex))
+            }
+
             let dbProducts = []
             if (result && !result.timeout && !result.error && Array.isArray(result.data)) {
-                dbProducts = result.data
+                dbProducts = result.data.filter(isValidProduct)
             }
 
             // Merge DB products with the complete 6,050+ Zeesy & Zamana catalog
-            const combined = [...dbProducts, ...mockProducts]
+            const catalogFiltered = mockProducts.filter(isValidProduct)
+            const combined = [...dbProducts, ...catalogFiltered]
             const uniqueProducts = []
             const seenKeys = new Set()
 
             for (const item of combined) {
-                if (!item) continue
+                if (!item || !isValidProduct(item)) continue
                 const key = item.name ? item.name.toLowerCase().trim() : item.id
                 if (!seenKeys.has(key)) {
                     seenKeys.add(key)
@@ -46,7 +64,7 @@ const Products = () => {
                 }
             }
 
-            setProducts(uniqueProducts.length > 0 ? uniqueProducts : mockProducts)
+            setProducts(uniqueProducts.length > 0 ? uniqueProducts : catalogFiltered)
         } catch (error) {
             console.error('Error fetching products:', error)
             setProducts(mockProducts)

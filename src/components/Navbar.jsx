@@ -161,17 +161,6 @@ const Navbar = () => {
             </nav>
         </header>
     )
-                                    <Link to="/signup" className="text-gray-700 hover:text-primary-600 font-medium" onClick={() => setIsMobileMenuOpen(false)}>
-                                        Sign Up
-                                    </Link>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                )}
-            </div>
-        </nav>
-    )
 }
 
 export default Navbar

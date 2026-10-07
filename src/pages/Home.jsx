@@ -55,17 +55,30 @@ const Home = () => {
 
             const result = await Promise.race([queryPromise, timeoutPromise])
 
-            if (result && !result.timeout && !result.error && result.data && result.data.length > 0) {
-                setFeaturedProducts(result.data)
-            } else {
-                // Fallback to mock PKR products (Zamana timepieces & accessories)
-                const featuredMock = mockProducts.filter(p => p.featured).slice(0, 8)
-                setFeaturedProducts(featuredMock.length > 0 ? featuredMock : mockProducts.slice(0, 8))
+            let dbProducts = []
+            if (result && !result.timeout && !result.error && Array.isArray(result.data)) {
+                dbProducts = result.data
             }
+
+            const featuredMock = mockProducts.filter(p => p.featured)
+            const combined = [...dbProducts, ...featuredMock]
+            const uniqueProducts = []
+            const seenKeys = new Set()
+
+            for (const item of combined) {
+                if (!item) continue
+                const key = item.name ? item.name.toLowerCase().trim() : item.id
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key)
+                    uniqueProducts.push(item)
+                }
+            }
+
+            setFeaturedProducts(uniqueProducts.slice(0, 12))
         } catch (error) {
             console.error('Error fetching products:', error)
-            const featuredMock = mockProducts.filter(p => p.featured).slice(0, 8)
-            setFeaturedProducts(featuredMock.length > 0 ? featuredMock : mockProducts.slice(0, 8))
+            const featuredMock = mockProducts.filter(p => p.featured).slice(0, 12)
+            setFeaturedProducts(featuredMock.length > 0 ? featuredMock : mockProducts.slice(0, 12))
         } finally {
             setLoading(false)
         }

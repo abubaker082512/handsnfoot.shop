@@ -27,11 +27,26 @@ const Products = () => {
 
             const result = await Promise.race([queryPromise, timeoutPromise])
 
-            if (result && !result.timeout && !result.error && result.data && result.data.length > 0) {
-                setProducts(result.data)
-            } else {
-                setProducts(mockProducts)
+            let dbProducts = []
+            if (result && !result.timeout && !result.error && Array.isArray(result.data)) {
+                dbProducts = result.data
             }
+
+            // Merge DB products with the complete 6,050+ Zeesy & Zamana catalog
+            const combined = [...dbProducts, ...mockProducts]
+            const uniqueProducts = []
+            const seenKeys = new Set()
+
+            for (const item of combined) {
+                if (!item) continue
+                const key = item.name ? item.name.toLowerCase().trim() : item.id
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key)
+                    uniqueProducts.push(item)
+                }
+            }
+
+            setProducts(uniqueProducts.length > 0 ? uniqueProducts : mockProducts)
         } catch (error) {
             console.error('Error fetching products:', error)
             setProducts(mockProducts)

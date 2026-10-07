@@ -145,7 +145,7 @@ const Home = () => {
                             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://cdn.shopify.com/s/files/1/0667/9606/0977/files/OceanWaveZirconBangles-Purple-2.webp?v=1791289290')" }}></div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
                             <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
-                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Zeesy Collection</span>
+                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Fine Jewelry</span>
                                 <h3 className="text-xl font-bold font-display uppercase tracking-wide">Jewelry & Ornaments</h3>
                                 <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
                                     Explore Jewelry <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
@@ -157,7 +157,7 @@ const Home = () => {
                             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80')" }}></div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
                             <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
-                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Zamana Timepieces</span>
+                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Timepieces</span>
                                 <h3 className="text-xl font-bold font-display uppercase tracking-wide">Premium Watches</h3>
                                 <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
                                     View Products <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>

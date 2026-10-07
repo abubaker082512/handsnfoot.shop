@@ -126,10 +126,10 @@ const Products = () => {
                                 className="input"
                             >
                                 <option value="All">All Categories</option>
-                                <option value="Jewelry">Jewelry (Zeesy.pk)</option>
-                                <option value="Watches">Watches (Zamana.pk)</option>
-                                <option value="Accessories">Accessories & Wallets</option>
-                                <option value="Beauty">Beauty & Cosmetics</option>
+                                <option value="Jewelry">Jewelry</option>
+                                <option value="Watches">Watches</option>
+                                <option value="Accessories">Accessories</option>
+                                <option value="Beauty">Beauty</option>
                                 <option value="Footwear">Footwear</option>
                             </select>
                         </div>

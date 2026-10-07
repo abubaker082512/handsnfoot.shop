@@ -24,6 +24,7 @@ import ShippingPolicy from './pages/ShippingPolicy'
 import TermsConditions from './pages/TermsConditions'
 import TrackOrder from './pages/TrackOrder'
 import FAQ from './pages/FAQ'
+import RecentSalesPopup from './components/RecentSalesPopup'
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <div className="flex flex-col min-h-screen">
             <Navbar />
             <CartDrawer />
+            <RecentSalesPopup />
             <main className="flex-grow">
               <Routes>
                 <Route path="/" element={<Home />} />

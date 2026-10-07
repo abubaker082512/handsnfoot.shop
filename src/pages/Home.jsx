@@ -131,60 +131,63 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Shop by Collection - Visual categories inspired by zamana.pk */}
+            {/* Brand Logos Bar */}
+            <section className="py-8 bg-gray-900 text-white border-y border-gray-800">
+                <div className="container-custom">
+                    <p className="text-center text-xs uppercase tracking-widest text-amber-400 font-semibold mb-6">CURATED PREMIUM BRANDS & ARTISAN COLLECTIONS</p>
+                    <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-80 text-sm font-bold tracking-widest uppercase">
+                        <span className="hover:text-amber-400 transition-colors">CASIO</span>
+                        <span className="hover:text-amber-400 transition-colors">CITIZEN</span>
+                        <span className="hover:text-amber-400 transition-colors">G-SHOCK</span>
+                        <span className="hover:text-amber-400 transition-colors">ZEESY JEWELS</span>
+                        <span className="hover:text-amber-400 transition-colors">LEATHER CRAFTS</span>
+                        <span className="hover:text-amber-400 transition-colors">SLAZENGER</span>
+                    </div>
+                </div>
+            </section>
+
+            {/* Shop by Collection - Visual categories */}
             <section className="py-20 bg-white">
                 <div className="container-custom">
                     <div className="text-center mb-12">
-                        <span className="text-primary-600 font-semibold text-sm uppercase tracking-widest">Premium Categories</span>
-                        <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mt-2">Shop by Collection</h2>
-                        <div className="w-12 h-0.5 bg-primary-500 mx-auto mt-4"></div>
+                        <span className="text-amber-600 font-semibold text-xs uppercase tracking-widest">Featured Collections</span>
+                        <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mt-2">Shop by Category</h2>
+                        <div className="w-12 h-0.5 bg-amber-500 mx-auto mt-4"></div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <Link to="/products?category=Jewelry" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
-                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://cdn.shopify.com/s/files/1/0667/9606/0977/files/OceanWaveZirconBangles-Purple-2.webp?v=1791289290')" }}></div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
-                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Fine Jewelry</span>
-                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Jewelry & Ornaments</h3>
-                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
-                                    Explore Jewelry <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <Link to="/products?category=Jewelry" className="group relative overflow-hidden rounded-2xl h-96 shadow-lg">
+                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://cdn.shopify.com/s/files/1/0667/9606/0977/files/OceanWaveZirconBangles-Purple-2.webp?v=1791289290')" }}></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white z-10">
+                                <span className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-1">Royalty & Grace</span>
+                                <h3 className="text-2xl font-bold font-display uppercase tracking-wide">Jewelry & Ornaments</h3>
+                                <span className="text-sm text-gray-300 mt-4 group-hover:text-amber-400 transition-colors inline-flex items-center font-semibold">
+                                    Explore Jewelry Collection <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                                 </span>
                             </div>
                         </Link>
 
-                        <Link to="/products?category=Watches" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
-                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80')" }}></div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
-                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Timepieces</span>
-                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Premium Watches</h3>
-                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
-                                    View Products <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                        <Link to="/products?category=Watches" className="group relative overflow-hidden rounded-2xl h-96 shadow-lg">
+                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80')" }}></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white z-10">
+                                <span className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-1">Timepieces</span>
+                                <h3 className="text-2xl font-bold font-display uppercase tracking-wide">Premium Watches</h3>
+                                <span className="text-sm text-gray-300 mt-4 group-hover:text-amber-400 transition-colors inline-flex items-center font-semibold">
+                                    Explore Watches Collection <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                                 </span>
                             </div>
                         </Link>
 
-                        <Link to="/products?category=Accessories" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
-                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://www.zamana.pk/cdn/shop/files/the-vertical-vogue-a-bifold-leather-wallet-brown-color-716913.webp?v=1719766381')" }}></div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
-                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Leather Goods</span>
-                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Wallets & Accessories</h3>
-                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
-                                    View Products <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                                </span>
-                            </div>
-                        </Link>
-
-                        <Link to="/products?category=Beauty" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
-                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://www.zamana.pk/cdn/shop/files/mekeyxecret-natural-long-lasting-liquid-blush-734412.jpg?v=1719767529')" }}></div>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
-                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Cosmetics</span>
-                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Beauty & Care</h3>
-                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
-                                    View Products <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                        <Link to="/products?category=Accessories" className="group relative overflow-hidden rounded-2xl h-96 shadow-lg">
+                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1627123424574-724758594e93?w=800&q=80')" }}></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/30 to-transparent"></div>
+                            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white z-10">
+                                <span className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-1">Leather Craftsmanship</span>
+                                <h3 className="text-2xl font-bold font-display uppercase tracking-wide">Wallets & Accessories</h3>
+                                <span className="text-sm text-gray-300 mt-4 group-hover:text-amber-400 transition-colors inline-flex items-center font-semibold">
+                                    Explore Leather Accessories <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                                 </span>
                             </div>
                         </Link>
@@ -192,13 +195,13 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* Featured Products Section - Styled minimal with gold labels */}
-            <section className="py-20 bg-gray-50">
+            {/* Featured Products Section */}
+            <section className="py-20 bg-gray-50 border-t border-gray-100">
                 <div className="container-custom">
                     <div className="text-center mb-12">
-                        <span className="text-primary-600 font-semibold text-sm uppercase tracking-widest">Customer Favorites</span>
+                        <span className="text-amber-600 font-semibold text-xs uppercase tracking-widest">Handpicked Favorites</span>
                         <h2 className="text-3xl md:text-4xl font-display font-bold text-gray-900 mt-2">Trending Now</h2>
-                        <div className="w-12 h-0.5 bg-primary-500 mx-auto mt-4"></div>
+                        <div className="w-12 h-0.5 bg-amber-500 mx-auto mt-4"></div>
                     </div>
 
                     {loading ? (
@@ -222,10 +225,44 @@ const Home = () => {
                     <div className="text-center mt-12">
                         <Link
                             to="/products"
-                            className="inline-block bg-black text-white hover:bg-primary-500 hover:text-black border border-black px-12 py-3.5 rounded-lg font-bold transition-all duration-300 shadow-md hover:shadow-xl text-sm uppercase tracking-wider"
+                            className="inline-block bg-gray-900 text-white hover:bg-amber-500 hover:text-gray-900 px-10 py-4 rounded-full font-bold transition-all duration-300 shadow-md hover:shadow-xl text-xs uppercase tracking-widest"
                         >
-                            View Entire Catalog
+                            View Entire Catalog ({mockProducts.length.toLocaleString()}+ Items)
                         </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* Customer Reviews Section */}
+            <section className="py-16 bg-white border-t border-gray-100">
+                <div className="container-custom">
+                    <div className="text-center mb-12">
+                        <span className="text-amber-600 font-semibold text-xs uppercase tracking-widest">Verified Feedback</span>
+                        <h2 className="text-3xl font-display font-bold text-gray-900 mt-2">What Our Customers Say</h2>
+                        <div className="w-12 h-0.5 bg-amber-500 mx-auto mt-4"></div>
+                    </div>
+
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 shadow-xs">
+                            <div className="flex text-amber-400 mb-3 text-sm">★★★★★</div>
+                            <p className="text-gray-700 text-sm italic mb-4">"The Kundan set arrived in 2 days in Lahore. Beautiful craftsmanship, exactly as shown in photos. Premium packaging!"</p>
+                            <p className="font-bold text-gray-900 text-xs uppercase tracking-wider">Zainab M., Lahore</p>
+                            <span className="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider">✓ Verified Buyer</span>
+                        </div>
+
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 shadow-xs">
+                            <div className="flex text-amber-400 mb-3 text-sm">★★★★★</div>
+                            <p className="text-gray-700 text-sm italic mb-4">"100% original Casio Enticer watch with official warranty card. Super fast delivery in Karachi via JazzCash payment."</p>
+                            <p className="font-bold text-gray-900 text-xs uppercase tracking-wider">Hamza A., Karachi</p>
+                            <span className="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider">✓ Verified Buyer</span>
+                        </div>
+
+                        <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 shadow-xs">
+                            <div className="flex text-amber-400 mb-3 text-sm">★★★★★</div>
+                            <p className="text-gray-700 text-sm italic mb-4">"Top notch genuine leather bifold wallet. Premium finish and stitch quality. Will definitely order again!"</p>
+                            <p className="font-bold text-gray-900 text-xs uppercase tracking-wider">Usman K., Islamabad</p>
+                            <span className="text-[10px] text-emerald-600 font-semibold uppercase tracking-wider">✓ Verified Buyer</span>
+                        </div>
                     </div>
                 </div>
             </section>

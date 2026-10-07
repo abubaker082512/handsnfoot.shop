@@ -16,10 +16,10 @@ const Navbar = () => {
     return (
         <header className="sticky top-0 z-50">
             {/* Top Luxury Announcement Bar */}
-            <div className="bg-gradient-to-r from-gray-900 via-primary-900 to-gray-900 text-white text-xs font-semibold py-2 px-4 text-center tracking-widest uppercase shadow-inner flex justify-between items-center container-custom">
-                <div className="hidden sm:block text-primary-300">✨ PREMUM LUXURY STORE</div>
-                <div className="mx-auto sm:mx-0">🚚 FREE NATIONWIDE DELIVERY ACROSS PAKISTAN | CASH ON DELIVERY AVAILABLE</div>
-                <div className="hidden md:block text-primary-300">📞 SUPPORT: 0300 0000000</div>
+            <div className="bg-gradient-to-r from-gray-900 via-amber-950 to-gray-900 text-white text-xs font-semibold py-2 px-4 text-center tracking-widest uppercase shadow-inner flex justify-center items-center">
+                <div className="text-amber-300 font-bold flex items-center gap-2">
+                    <span>✨</span> FREE NATIONWIDE EXPRESS DELIVERY ACROSS PAKISTAN | 100% AUTHENTIC GUARANTEE | CASH ON DELIVERY AVAILABLE
+                </div>
             </div>
 
             <nav className="bg-white shadow-md border-b border-gray-100 backdrop-blur-md bg-white/95">

@@ -109,8 +109,7 @@ const Products = () => {
                         { name: 'Jewelry', icon: '✨' },
                         { name: 'Watches', icon: '⌚' },
                         { name: 'Accessories', icon: '👜' },
-                        { name: 'Beauty', icon: '💄' },
-                        { name: 'Footwear', icon: '👟' }
+                        { name: 'Beauty', icon: '💄' }
                     ].map((cat) => (
                         <button
                             key={cat.name}
@@ -154,7 +153,6 @@ const Products = () => {
                                 <option value="Watches">Watches</option>
                                 <option value="Accessories">Accessories</option>
                                 <option value="Beauty">Beauty</option>
-                                <option value="Footwear">Footwear</option>
                             </select>
                         </div>
 

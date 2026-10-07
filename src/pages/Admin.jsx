@@ -252,6 +252,7 @@ const Admin = () => {
                                                 className="input"
                                             >
                                                 <option value="Watches">Watches</option>
+                                                <option value="Jewelry">Jewelry</option>
                                                 <option value="Accessories">Accessories</option>
                                                 <option value="Beauty">Beauty</option>
                                                 <option value="Footwear">Footwear</option>

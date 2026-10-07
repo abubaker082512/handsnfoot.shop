@@ -127,14 +127,26 @@ const Home = () => {
                         <div className="w-12 h-0.5 bg-primary-500 mx-auto mt-4"></div>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <Link to="/products?category=Jewelry" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
+                            <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://cdn.shopify.com/s/files/1/0667/9606/0977/files/OceanWaveZirconBangles-Purple-2.webp?v=1791289290')" }}></div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
+                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Zeesy Collection</span>
+                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Jewelry & Ornaments</h3>
+                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
+                                    Explore Jewelry <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                                </span>
+                            </div>
+                        </Link>
+
                         <Link to="/products?category=Watches" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
                             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80')" }}></div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white z-10">
-                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Timepieces</span>
-                                <h3 className="text-2xl font-bold font-display uppercase tracking-wide">Premium Watches</h3>
-                                <span className="text-sm text-gray-300 mt-4 group-hover:text-primary-400 transition-colors inline-flex items-center">
+                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
+                                <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Zamana Timepieces</span>
+                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Premium Watches</h3>
+                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
                                     View Products <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                                 </span>
                             </div>
@@ -143,10 +155,10 @@ const Home = () => {
                         <Link to="/products?category=Accessories" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
                             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://www.zamana.pk/cdn/shop/files/the-vertical-vogue-a-bifold-leather-wallet-brown-color-716913.webp?v=1719766381')" }}></div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white z-10">
+                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
                                 <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Leather Goods</span>
-                                <h3 className="text-2xl font-bold font-display uppercase tracking-wide">Wallets & Accessories</h3>
-                                <span className="text-sm text-gray-300 mt-4 group-hover:text-primary-400 transition-colors inline-flex items-center">
+                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Wallets & Accessories</h3>
+                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
                                     View Products <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                                 </span>
                             </div>
@@ -155,10 +167,10 @@ const Home = () => {
                         <Link to="/products?category=Beauty" className="group relative overflow-hidden rounded-xl h-80 shadow-md">
                             <div className="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" style={{ backgroundImage: "url('https://www.zamana.pk/cdn/shop/files/mekeyxecret-natural-long-lasting-liquid-blush-734412.jpg?v=1719767529')" }}></div>
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                            <div className="absolute inset-0 p-8 flex flex-col justify-end text-white z-10">
+                            <div className="absolute inset-0 p-6 flex flex-col justify-end text-white z-10">
                                 <span className="text-primary-400 text-xs font-semibold uppercase tracking-wider mb-1">Cosmetics</span>
-                                <h3 className="text-2xl font-bold font-display uppercase tracking-wide">Beauty & Care</h3>
-                                <span className="text-sm text-gray-300 mt-4 group-hover:text-primary-400 transition-colors inline-flex items-center">
+                                <h3 className="text-xl font-bold font-display uppercase tracking-wide">Beauty & Care</h3>
+                                <span className="text-sm text-gray-300 mt-3 group-hover:text-primary-400 transition-colors inline-flex items-center">
                                     View Products <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
                                 </span>
                             </div>

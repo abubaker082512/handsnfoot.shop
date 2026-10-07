@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS products (
     description TEXT,
     price       NUMERIC(10,2)   NOT NULL CHECK (price >= 0),
     category    TEXT            NOT NULL
-                                CHECK (category IN ('Watches','Footwear','Accessories','Beauty')),
+                                CHECK (category IN ('Watches','Footwear','Accessories','Beauty','Jewelry')),
     image       TEXT            NOT NULL,
     stock       INTEGER         NOT NULL DEFAULT 0 CHECK (stock >= 0),
     featured    BOOLEAN         DEFAULT FALSE,
